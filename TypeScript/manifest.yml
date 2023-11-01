@@ -8,3 +8,4 @@ applications:
   services:
   - dest_MdnPodPlugin
   - connectivity-cf
+  - postgresql-cf
