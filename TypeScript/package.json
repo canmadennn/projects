@@ -1,0 +1,40 @@
+{
+  "name": "demoBackendServices",
+  "version": "1.0.0",
+  "main": "index.js",
+  "engines": {
+    "node": "20.6.0",
+    "npm": "9.7.2"
+  },
+  "scripts": {
+    "build": "tsc",
+    "deploy": "tsc & cf8 push",
+    "start": "node --inspect src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg-promise": "11.5.4",
+    "pg-monitor": "2.0.0",
+    "@sap-cloud-sdk/connectivity": "3.5.0",
+    "@sap-cloud-sdk/openapi": "3.5.0",
+    "@sap-cloud-sdk/openapi-generator": "^3.5.0",
+    "@types/cors": "2.8.14",
+    "@types/express": "^4.17.13",
+    "@types/node": "^20.6.0",
+    "@types/sap__xsenv": "^3.3.0",
+    "@sap/xsenv": "4.0.0",
+    "dotenv": "16.3.1",
+    "express": "^4.18.2",
+    "sap-cf-axios": "0.4.10",
+    "typescript": "^4.9.5",
+    "body-parser": "1.20.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz",
+    "@types/express-formidable": "^1.2.0",
+    "express-formidable": "^1.2.0"
+  },
+  "devDependencies": {},
+  "description": ""
+}

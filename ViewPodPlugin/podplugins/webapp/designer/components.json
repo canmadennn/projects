@@ -1,0 +1,49 @@
+{
+    "components" : [
+        {
+           "id": "comViewPlugin",
+           "type": "VIEW_PLUGIN",
+           "allowMultipleInstances": true,
+           "name": "com.maden.viewplugins.exampleViewPlugin",
+           "propertyEditor": "com.maden.viewplugins.exampleViewPlugin.builder.PropertyEditor",
+           "i18n": "com.maden.viewplugins.exampleViewPlugin.i18n.i18n",
+           "productionProcessEnabled": true,
+           "productionProcessTitle": "Example View Plugin",
+           "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+        },
+      {
+        "id": "sfcStartAndCompleteExc",
+        "type": "EXECUTION_PLUGIN",
+        "allowMultipleInstances": false,
+        "name": "com.maden.viewplugins.sfcStartAndComplete",
+        "propertyEditor": "com.maden.viewplugins.sfcStartAndComplete.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.sfcStartAndComplete.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "sfcStartAndCompleteExcTitle",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+      },
+      {
+        "id": "serviceReturnTable",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.serviceReturnTable",
+        "propertyEditor": "com.maden.viewplugins.serviceReturnTable.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.serviceReturnTable.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "serviceReturnTableTitle",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+      },
+      {
+        "id": "userLoginID",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.userLogin",
+        "propertyEditor": "com.maden.viewplugins.userLogin.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.userLogin.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "userLoginTitle",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+      }
+
+    ]
+}

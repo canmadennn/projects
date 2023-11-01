@@ -1,0 +1,14 @@
+/* Enter your custom styles here */
+
+.fondBoldRed{
+    text-align: center;
+    font-size: 4rem;
+    color: darkred;
+    font-weight: bold;
+}
+.fondBoldBlck{
+    text-align: center;
+    font-size: 4rem;
+    color: black;
+    font-weight: bold;
+}

@@ -1,0 +1,2666 @@
+swagger: '2.0'
+info:
+  description: This service enables you to perform goods receipt related activities, as well as inventory related actions that include but are not limited to posting goods receipts, retrieving stock information and initiating stock transfer between SAP Digital Manufacturing and integrated ERP systems.
+  version: v1
+  title: Inventory
+  contact:
+    name: SAP Digital Manufacturing Operations
+    email: sap-dmoperation@sap.com
+externalDocs:
+  description: Prepare for API Integration
+  url: https://help.sap.com/docs/sap-digital-manufacturing/operations-guide/prepare-for-api-integration
+host: hostname
+basePath: /
+tags:
+- name: DMC Stocks
+- name: Goods Receipts
+security:
+- OAuthSecurity: []
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /inventory/goodsReceipts:
+    get:
+      tags:
+      - Goods Receipts
+      summary: Gets posted goods receipts.
+      description: Gets posted goods receipts that are performed in the Order POD app, the Post-Production Reporting POD app, and with the Goods Receipt public API. The request parameters are case sensitive. As the serial number functionality is not fully supported, thus serial numbers are not returned in this API.
+      operationId: getPostedGoodsReceiptsUsingGET_1
+      produces:
+      - application/json
+      parameters:
+      - name: plant
+        in: query
+        description: The plant where the goods receipts is posted
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 0
+      - name: order
+        in: query
+        description: The order number of the goods receipt. You must fill either the order or the SFC to get goods receipts.
+        required: false
+        type: string
+        maxLength: 12
+        minLength: 0
+      - name: sfc
+        in: query
+        description: 'The shop floor control number of the goods receipt. You must fill either the order or the SFC to get goods receipts. If you fill both, the SFC must belong to the order provided. '
+        required: false
+        type: string
+        maxLength: 128
+        minLength: 0
+      - name: material
+        in: query
+        description: The material name of the goods receipt
+        required: false
+        type: string
+        maxLength: 40
+        minLength: 0
+      - name: page
+        in: query
+        description: The page number you want to query. Number 0 is the first page.
+        required: false
+        type: integer
+        format: int32
+      - name: size
+        in: query
+        description: The page size determines how many goods receipt postings are displayed in one page.
+        required: false
+        type: integer
+        format: int32
+      responses:
+        '200':
+          description: Goods receipts have been retrieved.
+          schema:
+            $ref: '#/definitions/Page_PostedGoodsReceipt'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /dmcStock:
+    get:
+      tags:
+      - DMC Stocks
+      summary: Get material stock information for a given plant.
+      description: Get stock information such as status, quantity and handling unit, etc. for a given plant.  Be aware that the API is deprecated, and will be decommissioned and retired from production in a few releases. It's recommended to use the new successor API <a href=https://api.sap.com/api/sapdme_inventory/resource>/inventories</a>.
+      operationId: getDMCStockByRequestUsingGET_1
+      produces:
+      - application/json
+      parameters:
+      - name: inventoryId
+        in: query
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+        required: false
+        type: string
+      - name: batchNumber
+        in: query
+        description: The batch number of the stock
+        required: false
+        type: string
+      - name: handlingUnit
+        in: query
+        description: The handling unit number of the innermost package
+        required: false
+        type: string
+      - name: material
+        in: query
+        description: The material number of the stock
+        required: false
+        type: string
+      - name: noZeroStockLine
+        in: query
+        description: If set to 'true', zero stock lines (stocks with no quantity at all) are not displayed. If set to 'false', all stock lines are displayed
+        required: false
+        type: string
+      - name: plant
+        in: query
+        description: Plant name
+        required: true
+        type: string
+      - name: productionSupplyArea
+        in: query
+        description: The production supply area of the stock
+        required: false
+        type: string
+      - name: psaBin
+        in: query
+        description: The bin where the stock is stored at the production supply area
+        required: false
+        type: string
+      - name: reservedOperation
+        in: query
+        description: The operation for which the stock is reserved
+        required: false
+        type: string
+      - name: reservedOrder
+        in: query
+        description: The order number for which the stock is reserved
+        required: false
+        type: string
+      - name: returnResultNumber
+        in: query
+        description: Set the number of stock lines returned. If no value is set, the default value of 20 is used.
+        required: false
+        type: integer
+        format: int32
+      - name: serialNumber
+        in: query
+        description: The serial number of the stock
+        required: false
+        type: string
+      - name: status
+        in: query
+        description: 'The status of the stock. You can query stock with one of the 3 possible statuses: AVAILABLE, HOLD and QUARANTINE. /nThe AVAILABLE stock corresponds to the ''Unrestricted-Use Stock (01)'' in integrated ERP system. The HOLD stock corresponds to ''Stock in Quality Inspection (02)'', and the QUARANTINE stock corresponds to ''BLOCKED STOCK (07)''.'
+        required: false
+        type: string
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      - name: topHandlingUnit
+        in: query
+        description: The handling unit of the outermost package
+        required: false
+        type: string
+      - name: type
+        in: query
+        description: If set to 'ERP', ERP inventory is displayed. If set to 'EWM', EWM inventory is displayed. If set to 'LOCAL', local inventory is displayed.
+        required: false
+        type: string
+        enum:
+        - ERP
+        - EWM
+        - LOCAL
+      - name: version
+        in: query
+        description: The version of the material. If set to '*', stocks with all versions are displayed. If set to empty, stocks with current version are displayed. If set to a specific version, stocks with that specific version are displayed.
+        required: false
+        type: string
+      responses:
+        '200':
+          description: Stock information has been retrieved successfully.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DmcStockDto'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      deprecated: true
+  /inventories:
+    get:
+      tags:
+      - DMC Stocks
+      summary: Gets stock information for a given plant.
+      description: Gets stocks that have been created in SAP Digital Manufacturing for a given plant. You can retrieve stocks of different statuses and types, as well as stocks with or without on-hand quantity.
+      operationId: getInventoriesUsingGET_2
+      produces:
+      - application/json
+      parameters:
+      - name: batchNumber
+        in: query
+        description: The batch number of the stock
+        required: false
+        type: string
+        maxLength: 412
+        minLength: 0
+      - name: handlingUnit
+        in: query
+        description: The handling unit number of the innermost package
+        required: false
+        type: string
+        maxLength: 20
+        minLength: 0
+      - name: inventoryId
+        in: query
+        description: The inventory ID of the stock
+        required: false
+        type: string
+        maxLength: 128
+        minLength: 0
+      - name: inventoryIds
+        in: query
+        description: The inventory IDs of the stocks. You can query a maximum of 50 inventory IDs at one time.
+        required: false
+        type: array
+        maxItems: 50
+        collectionFormat: multi
+        items:
+          type: string
+          maxLength: 128
+      - name: material
+        in: query
+        description: The material of the stock
+        required: false
+        type: string
+        maxLength: 40
+        minLength: 0
+      - name: materialVersion
+        in: query
+        description: The material version of the stock
+        required: false
+        type: string
+        maxLength: 20
+        minLength: 0
+      - name: page
+        in: query
+        description: The page number you want to query. Number 0 is the first page.
+        required: false
+        type: integer
+        format: int32
+      - name: plant
+        in: query
+        description: The plant of the stock
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 0
+      - name: productionSupplyArea
+        in: query
+        description: The production supply area of the stock
+        required: false
+        type: string
+        maxLength: 10
+        minLength: 0
+      - name: reservedOperation
+        in: query
+        description: The operation for which the stock is reserved
+        required: false
+        type: string
+        maxLength: 412
+        minLength: 0
+      - name: reservedOrder
+        in: query
+        description: The order for which the stock is reserved
+        required: false
+        type: string
+        maxLength: 36
+        minLength: 0
+      - name: serialNumber
+        in: query
+        description: The serial number of the stock
+        required: false
+        type: string
+        maxLength: 18
+        minLength: 0
+      - name: stockRetrieveScope
+        in: query
+        description: 'Specify if you want to retrieve stocks with zero quantity. A stock with zero quantity includes but is not limited to stock that once exists in the system, but have zero on-hand quantity due to various reasons. There are 3 possible options: 1) ''ALL'': all stock lines are displayed, including stocks with or without non-zero quantity; 2) ''NO_ZERO_STOCK'' (default): only stocks with non-zero quantity are displayed; 3) ''ZERO_STOCK'': only stocks with zero quantity are displayed.'
+        required: false
+        type: string
+        enum:
+        - ALL
+        - NO_ZERO_STOCK
+        - ZERO_STOCK
+      - name: size
+        in: query
+        description: The page size determines how many stocks are displayed in one page. Default page size is 20.
+        required: false
+        type: integer
+        format: int32
+      - name: sort
+        in: query
+        description: 'The retrieved stocks can be sorted by using one or more of the following fields: ''inventoryId'', ''storageLocation'', ''productionSupplyArea'', ''storageBin'', ''handlingUnit'', ''batchNumber'' and ''serialNumber''. Example: https://xxx/api/v1/inventories?xxxx&sort=inventoryId,asc&sort= productionSupplyArea,desc.'
+        required: false
+        type: string
+      - name: status
+        in: query
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        required: false
+        type: string
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      - name: storageBin
+        in: query
+        description: The storage bin where the stock is stored at the production supply area
+        required: false
+        type: string
+        maxLength: 20
+        minLength: 0
+      - name: storageLocation
+        in: query
+        description: The storage location of the inventory
+        required: false
+        type: string
+        maxLength: 4
+        minLength: 0
+      responses:
+        '200':
+          description: Stocks have been retrieved.
+          schema:
+            $ref: '#/definitions/GetInventoryResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+    post:
+      tags:
+      - DMC Stocks
+      summary: Creates a stock for a given plant and material.
+      description: Creates a stock with either 'DMC', 'ERP' or 'EWM' origin for a specific material at a given plant. To create stock with 'ERP' or 'EWM' origins, you need to firstly enable External Inventory Management in the Manage Business Settings app.
+      operationId: createInventoryPOST_2
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateInventoryRequest'
+      responses:
+        '201':
+          description: Stock has been created.
+          schema:
+            $ref: '#/definitions/CreateInventoryResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventories/advancedQuery:
+    post:
+      tags:
+      - DMC Stocks
+      summary: Retrieves stock information for a given plant.
+      description: Retrieves stocks that have been created in SAP Digital Manufacturing for a given plant. You can retrieve stocks of different statuses and types, as well as stocks with or without on-hand quantity.
+      operationId: queryInventoriesUsingPost
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/QueryInventoryRequest'
+      responses:
+        '200':
+          description: Stocks have been retrieved.
+          schema:
+            $ref: '#/definitions/QueryInventoryResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventories/bulkCreate:
+    post:
+      tags:
+      - DMC Stocks
+      summary: Creates multiple stocks for a given plant.
+      description: Creates multiple stocks with either 'DMC', 'ERP' or 'EWM' origin for specific materials at a given plant. To create stock with 'ERP' or 'EWM' origins, you need to firstly enable External Inventory Management in the Manage Business Settings app.
+      operationId: createInventoryPOST_3
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/CreateBulkInventoriesRequest'
+      responses:
+        '201':
+          description: Stocks are created.
+          schema:
+            $ref: '#/definitions/CreateBulkInventoriesResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventory/erpGoodsReceipts:
+    post:
+      tags:
+      - Goods Receipts
+      summary: Posts goods receipts for products in the plant that has enabled Inventory Management.
+      description: Posts goods receipts for products in the plant where Inventory Management is enabled in SAP Digital Manufacturing. The goods receipts are posted in both SAP Digital Manufacturing and the integrated ERP system. You can only post a single goods receipt at one time. For the goods receipt filled with serial number, you can only post one product.
+      operationId: postErpGoodsReceiptsUsingPOST_2
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/PostErpGoodsReceiptRequest'
+      responses:
+        '202':
+          description: Goods receipt request has been accepted.
+          schema:
+            $ref: '#/definitions/PostErpGoodsReceiptResponse'
+        '400':
+          description: The HTTP request is invalid which cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: The resource you are accessing is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '409':
+          description: The resource has been modified by another user. Please retry later.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventory/ewmGoodsReceipts:
+    post:
+      tags:
+      - Goods Receipts
+      summary: Posts goods receipts for products that have enabled Extended Warehouse Management.
+      description: Posts goods receipts for products in the plant where Extended Warehouse Management is enabled in SAP Digital Manufacturing. The goods receipts are posted in both SAP Digital Manufacturing and the integrated EWM system. You can only post a single goods receipt at one time. For the goods receipt filled with serial number, you can only post one product.
+      operationId: postEwmGoodsReceiptsUsingPOST_2
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/PostEwmGoodsReceiptRequest'
+      responses:
+        '202':
+          description: Goods receipt request has been accepted.
+          schema:
+            $ref: '#/definitions/PostEwmGoodsReceiptResponse'
+        '400':
+          description: The HTTP request is invalid which cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: The resource you are accessing is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '409':
+          description: The resource has been modified by another user. Please retry later.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventory/goodsReceipts/summarize:
+    get:
+      tags:
+      - Goods Receipts
+      summary: Gets goods receipt summary.
+      description: Retrieves the summarized information, such as material, batch number, storage location, of posted goods receipts for a given order or Shop Floor Control. You can retrieve goods receipts managed by both Inventory Management (IM) and Extended Warehouse Management (EWM).
+      operationId: getGoodsReceiptSummaryUsingGET_2
+      produces:
+      - application/json
+      parameters:
+      - name: plant
+        in: query
+        description: The plant where the goods receipt is performed
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 0
+      - name: sfc
+        in: query
+        description: The Shop Floor Control for which the goods receipt is performed
+        required: true
+        type: string
+        maxLength: 128
+        minLength: 0
+      - name: order
+        in: query
+        description: The order for which the goods receipt is performed
+        required: true
+        type: string
+        maxLength: 12
+        minLength: 0
+      responses:
+        '200':
+          description: Goods receipt summarized information has been retrieved.
+          schema:
+            $ref: '#/definitions/GoodsReceiptSummaryResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventory/goodsReceipts/cancel:
+    post:
+      tags:
+      - Goods Receipts
+      summary: Cancels goods receipts.
+      operationId: cancelPostedGoodsReceiptUsingPOST_2
+      description: Cancels goods receipts that are successfully posted in SAP Digital Manufacturing as well as the integrated ERP system. You can only cancel a single goods receipt at one time.
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/CancelGoodsReceiptsRequest'
+      responses:
+        '200':
+          description: Goods receipts have been canceled.
+          schema:
+            $ref: '#/definitions/CancelGoodsReceiptsResponse'
+        '202':
+          description: Cancellation request has been accepted.
+          schema:
+            $ref: '#/definitions/CancelGoodsReceiptsResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /storageLocations:
+    get:
+      tags:
+      - Storage Locations
+      summary: Gets storage locations for a given plant.
+      description: Retrieves various types of storage locations for a given plant. You can retrieve storage locations of a particular type, or a specific storage location by its name.
+      operationId: getStorageLocationsUsingGET_2
+      produces:
+      - application/json
+      parameters:
+      - name: isCentralStorageLocation
+        in: query
+        description: An indicator to specify whether to include central storage location in the query. Fill either isCentralStorageLocation or isProductionStorageLocation to specify the type of storage location you want to retrieve. The two parameters can't be both 'true'.
+        required: false
+        type: boolean
+      - name: isEWMManagedStorageLocation
+        in: query
+        description: An indicator to specify whether to include storage location managed by Extended Warehouse Management in the query
+        required: false
+        type: boolean
+      - name: isProductionStorageLocation
+        in: query
+        description: An indicator to specify whether to include production storage location in the query. Fill either isCentralStorageLocation or isProductionStorageLocation to specify the type of storage location you want to retrieve. The two parameters can't be both 'true'.
+        required: false
+        type: boolean
+      - name: page
+        in: query
+        description: The page number you want to query. Number 0 is the first page.
+        required: false
+        type: integer
+        format: int32
+      - name: plant
+        in: query
+        description: Plant
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 0
+      - name: size
+        in: query
+        description: The page size determines how many storage locations are displayed in one page. Default page size is 20.
+        required: false
+        type: integer
+        format: int32
+      - name: sort
+        in: query
+        description: 'The retrieved storage locations can be sorted by ''storageLocation'' Example: https://xxx/api/v1/storageLocations?xxxx&sort=storageLocation,asc.'
+        required: false
+        type: string
+      - name: storageLocation
+        in: query
+        description: Storage Location.
+        required: false
+        type: string
+        maxLength: 4
+        minLength: 0
+      responses:
+        '200':
+          description: Indicates that storage locations are retrieved successfully.
+          schema:
+            $ref: '#/definitions/Page_GetStorageLocationResponse'
+        '400':
+          description: The HTTP request is invalid which cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authenticated.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: You are not authorized to access this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: The resources are not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventories/{inventoryId}:
+    patch:
+      tags:
+      - DMC Stocks
+      summary: Updates a single stock for a given plant.
+      description: Updates an existing stock for a given plant. You can update a stock with DMC, ERP or EWM origin. For DMC stock, you can increase the stock on-hand quantity, or change the stock information such as stock status and assembly data. For ERP or EWM stock, you can only change its assembly data.
+      operationId: UpdateInventoriesUsingPATCH_1
+      produces:
+      - application/json
+      parameters:
+      - name: inventoryId
+        in: path
+        description: The inventory ID of the stock that needs to be updated
+        required: true
+        type: string
+        maxLength: 128
+        minLength: 0
+      - name: plant
+        in: query
+        description: The plant of the stock
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 0
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateInventoryRequest'
+      responses:
+        '200':
+          description: The stock has been updated.
+          schema:
+            $ref: '#/definitions/UpdateInventoryResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+  /inventories/transfer:
+    post:
+      tags:
+      - DMC Stocks
+      summary: Transfers the full or the partial quantity of a DMC stock to a different storage location.
+      description: Transfers the full or the partial quantity of a DMC stock to a different storage location. If the full quantity of the stock is transferred, an inventory ID is created for the new stock and the original stock is removed. If only the partial quantity of the stock is transferred, an inventory ID is created for the new stock and the original stock still exists, only with a decreased quantity. This API is only supported for stocks with DMC origin.
+      operationId: transferInventoryUsingPOST
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/TransferInventoryRequest'
+      responses:
+        '201':
+          description: Stock transfer has been performed.
+          schema:
+            $ref: '#/definitions/TransferInventoryResponse'
+        '400':
+          description: The HTTP request is invalid and it cannot be processed by the server correctly.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '404':
+          description: Resource not found.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/ErrorResponseV3'
+securityDefinitions:
+  OAuthSecurity:
+    type: oauth2
+    tokenUrl: https://{subdomain}.authentication.{tokenHost}/oauth/token
+    flow: application
+definitions:
+  InventoryAssemblyDataDto:
+    type: object
+    properties:
+      dataAttribute:
+        type: string
+        description: The field value of the stock data type
+        minLength: 0
+        maxLength: 1000
+      dataField:
+        type: string
+        description: The field name of the stock data type
+        minLength: 0
+        maxLength: 60
+      sequence:
+        type: number
+        description: The technical sequence of the stock data fields. You can refer to it to display the data fields in UI.
+    title: InventoryAssemblyDataDto
+  Page_PostedGoodsReceipt:
+    type: object
+    properties:
+      content:
+        type: array
+        description: The list of goods receipts
+        items:
+          $ref: '#/definitions/PostedGoodsReceipt'
+      number:
+        description: The current page number
+        type: integer
+        format: int32
+      numberOfElements:
+        description: The number of goods receipt postings on the current page
+        type: integer
+        format: int32
+      totalElements:
+        description: The total number of goods receipt postings that are returned
+        type: integer
+        format: int64
+      totalPages:
+        description: The total number of pages that are returned
+        type: integer
+        format: int32
+    title: Page_PostedGoodsReceipt
+  PostedGoodsReceipt:
+    type: object
+    properties:
+      batchNumber:
+        type: string
+        description: The batch number of the product
+      comments:
+        type: string
+        description: The comments of the goods receipt postings
+      handlingUnit:
+        type: string
+        description: The handling unit number of product. It applies only to goods receipts that are posted to Extended Warehouse Management.
+      material:
+        type: string
+        description: The material name of product
+      materialVersion:
+        type: string
+        description: The material version of product
+      order:
+        type: string
+        description: The order number of the goods receipt
+      plant:
+        type: string
+        description: The plant where the goods receipt is posted
+      postedBy:
+        type: string
+        description: The user who posted goods receipts
+      postingDate:
+        type: string
+        format: date
+        example: '2022-09-23'
+        description: 'The posting date of the goods receipt. Format (ISO-8601): YYYY-MM-DD'
+      quantityInBaseUnit:
+        description: The number of products calculated in base unit of measure
+        $ref: '#/definitions/Quantity'
+      quantityInProductionUnit:
+        description: The number of products calculated in production unit of measure
+        $ref: '#/definitions/Quantity'
+      sfc:
+        type: string
+        description: The shop floor control number of product
+      status:
+        type: string
+        description: 'The status of the goods receipt. There are the following possible statuses: /n1) CANCELLATION_FAILED_TO_POST_TO_TARGET_SYS: Cancellation has been triggered for the goods receipt, yet the cancellation to the integrated ERP system failed; /n2) CANCELLATION_POSTED_IN_DMC: Cancellation has been triggered for the goods receipt, and it has been successfully posted in SAP Digital Manufacturing; /n3) CANCELLATION_POSTED_TO_TARGET_SYS: Cancellation has been triggered for the goods receipt, and it has been successfully posted in both SAP Digital Manufacturing and the integrated ERP system; /n4) FAILED_TO_POST_TO_TARGET_SYS: Goods receipt posting to the integrated ERP system failed; /n5) POSTED_IN_DMC: Goods receipt has been successfully posted in SAP Digital Manufacturing; /n6) POSTED_TO_TARGET_SYS: Goods receipt has been successfully posted in both SAP Digital Manufacturing and the integrated ERP system.'
+        enum:
+        - CANCELLATION_FAILED_TO_POST_TO_TARGET_SYS
+        - CANCELLATION_POSTED_IN_DMC
+        - CANCELLATION_POSTED_TO_TARGET_SYS
+        - FAILED_TO_POST_TO_TARGET_SYS
+        - POSTED_IN_DMC
+        - POSTED_TO_TARGET_SYS
+      storageLocation:
+        type: string
+        description: The storage location of product
+      transactionId:
+        type: string
+        description: The ID of the goods receipt transaction
+      createdDateTime:
+        type: string
+        format: date-time
+        example: '2022-06-22T04:24:24.000Z'
+        description: 'The creation date time of goods receipt in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+    title: PostedGoodsReceipt
+  DmcStockDto:
+    type: object
+    properties:
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material number of the stock
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the stock is stored
+      psaBin:
+        type: string
+        description: The PSA bin where the stock is stored
+      quantityOnHand:
+        type: number
+        description: The available quantity of the stock
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+      reservedOrder:
+        type: string
+        description: The order number for which the stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+      status:
+        type: string
+        description: 'The status of the stock: Available, Hold, Quarantine'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      topHandlingUnit:
+        type: string
+        description: The handling unit of the outermost package
+      type:
+        type: string
+        description: The inventory type
+        enum:
+        - ERP
+        - EWM
+        - LOCAL
+      version:
+        type: string
+        description: The version of the material
+    title: DmcStockDto
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: The technical code of the error.
+      correlationId:
+        type: string
+        description: The correlation ID used for debugging and tracing corresponding request.
+      errorMessageKey:
+        type: string
+        description: Internal error message key, if any
+      message:
+        type: string
+        description: Error message detail
+      technicalMessage:
+        type: string
+        description: Contains technical reason for the error.
+      timestamp:
+        type: integer
+        format: int64
+        description: Timestamp
+    title: ErrorResponse
+    description: 'Error response. '
+  ErrorResponseV3:
+    type: object
+    properties:
+      causeMessage:
+        type: string
+        description: The technical reason for the error
+      code:
+        type: string
+        description: The internal error message
+      correlationId:
+        type: string
+        description: The correlationId of the error
+      message:
+        type: string
+        description: Any additional information of the error
+      status:
+        type: integer
+        format: int32
+        description: HTTP status code
+    title: ErrorResponseV3
+    description: Error response.
+  PostErpGoodsReceiptRequest:
+    type: object
+    required:
+    - lineItems
+    - order
+    - plant
+    properties:
+      lineItems:
+        type: array
+        description: The request details of the goods receipt posting
+        items:
+          $ref: '#/definitions/PostErpGoodsReceiptRequestItem'
+      order:
+        type: string
+        description: The order number for which the goods receipt is performed
+        minLength: 0
+        maxLength: 12
+      plant:
+        type: string
+        description: The plant where the goods receipt is performed
+        minLength: 0
+        maxLength: 6
+      postedBy:
+        type: string
+        description: Specify the person who posted the goods receipt. The person must be a registered user. The property value can be the user ID, user name or user email address, etc.
+        maxLength: 412
+    title: PostErpGoodsReceiptRequest
+  PostErpGoodsReceiptResponse:
+    type: object
+    properties:
+      lineItems:
+        type: array
+        description: The response details of the goods receipt posting
+        items:
+          $ref: '#/definitions/PostErpGoodsReceiptResponseItem'
+      order:
+        type: string
+        description: The order number for which the goods receipt is performed
+      plant:
+        type: string
+        description: The plant where the goods receipt is posted
+      postedBy:
+        type: string
+        description: The user who posted the goods receipt
+    title: PostErpGoodsReceiptResponse
+  GetInventoryResponse:
+    type: object
+    properties:
+      content:
+        type: array
+        description: The stock detail items
+        items:
+          $ref: '#/definitions/GetInventoryResponseItem'
+      number:
+        type: integer
+        format: int32
+        description: The current page number. The initial page number starts from '0'.
+      numberOfElements:
+        type: integer
+        format: int64
+        description: Indicates how many stocks are returned on the current page
+      totalElements:
+        type: integer
+        format: int64
+        description: Indicates how many stocks are returned in total
+      totalPages:
+        type: integer
+        format: int32
+        description: Indicates how many pages are returned
+    title: GetInventoryResponse
+  GetInventoryResponseItem:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyDataDto'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+      createdDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The creation date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material of the stock
+      materialVersion:
+        type: string
+        description: The material version of the stock
+      modifiedDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The modification date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      origin:
+        type: string
+        description: 'The origin of the stock. It indicates where the stock originally comes from. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the stock is stored
+      quantityOnHand:
+        description: The available quantity of the stock
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+      reservedOrder:
+        type: string
+        description: The order for which the stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE'''
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area
+      storageLocation:
+        type: string
+        description: The storage location where the stock is stored
+    title: GetInventoryResponseItem
+  GetInventoryResponseItemQuantity:
+    type: object
+    required:
+    - unitOfMeasure
+    - value
+    properties:
+      unitOfMeasure:
+        description: The unit of measure of the stock
+        $ref: '#/definitions/UnitOfMeasure'
+      value:
+        type: number
+        description: The on-hand quantity of the stock
+    title: Stock Quantity
+  Quantity:
+    type: object
+    required:
+    - unitOfMeasure
+    - value
+    properties:
+      unitOfMeasure:
+        description: The unit of measure
+        $ref: '#/definitions/UnitOfMeasure'
+      value:
+        type: number
+        description: Indicates how many products are posted in the goods receipt.
+    title: Quantity
+  QueryInventoryRequest:
+    type: object
+    required:
+    - plant
+    properties:
+      plant:
+        type: string
+        description: The plant of the stock
+        maxLength: 6
+        minLength: 0
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+        maxLength: 412
+        minLength: 0
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+        maxLength: 20
+        minLength: 0
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock
+        maxLength: 128
+        minLength: 0
+      inventoryIds:
+        type: array
+        description: The inventory IDs of the stocks. You can query a maximum of 50 inventory IDs at one time.
+        maxItems: 50
+        items:
+          type: string
+          maxLength: 128
+      material:
+        type: string
+        description: The material of the stock
+        maxLength: 40
+        minLength: 0
+      materialVersion:
+        type: string
+        description: The material version of the stock
+        maxLength: 20
+        minLength: 0
+      productionSupplyArea:
+        type: string
+        description: The production supply area of the stock
+        maxLength: 10
+        minLength: 0
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+        maxLength: 412
+        minLength: 0
+      reservedOrder:
+        type: string
+        description: The order for which the stock is reserved
+        maxLength: 36
+        minLength: 0
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+        maxLength: 18
+        minLength: 0
+      stockRetrieveScope:
+        type: string
+        default: NO_ZERO_STOCK
+        description: 'Specify if you want to retrieve stocks with zero quantity. A stock with zero quantity includes but is not limited to stock that once exists in the system, but have zero on-hand quantity due to various reasons. There are 3 possible options: 1) ''ALL'': all stock lines are displayed, including stocks with or without non-zero quantity; 2) ''NO_ZERO_STOCK'' (default): only stocks with non-zero quantity are displayed; 3) ''ZERO_STOCK'': only stocks with zero quantity are displayed.'
+        enum:
+        - ALL
+        - NO_ZERO_STOCK
+        - ZERO_STOCK
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageLocation:
+        type: string
+        description: The storage location of the inventory
+        maxLength: 4
+        minLength: 0
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area
+        maxLength: 20
+        minLength: 0
+      assemblyDataFilter:
+        type: object
+        required:
+        - conditions
+        properties:
+          conditions:
+            type: array
+            description: The query conditions of the stock data type.
+            maxItems: 3
+            items:
+              $ref: '#/definitions/AssemblyDataItem'
+          conjunction:
+            type: string
+            default: AND
+            description: 'Specify whether conjunction or disjunction is applied to given assembly data items. There are two possible conjunction types: ''AND'' and ''OR''. The default type is ''AND''.'
+            enum:
+            - AND
+            - OR
+        title: AssemblyDataFilter
+      page:
+        type: integer
+        default: 0
+        description: The page number you want to query. Number 0 is the first page.
+        format: int32
+      size:
+        type: integer
+        default: 20
+        description: The page size determines how many stocks are displayed in one page. Default page size is 20.
+        format: int32
+      sort:
+        type: array
+        description: 'The retrieved stocks can be sorted by using one or more of the following fields: ''inventoryId'', ''storageLocation'', ''productionSupplyArea'', ''storageBin'', ''handlingUnit'', ''batchNumber'' and ''serialNumber''.'
+        items:
+          $ref: '#/definitions/InventorySort'
+    title: QueryInventoryRequest
+  AssemblyDataItem:
+    type: object
+    required:
+    - dataField
+    - dataAttributes
+    properties:
+      dataAttributes:
+        type: array
+        description: The field values of the stock data type. You can specify a maximum of 2 values for each data field.
+        maxItems: 2
+        items:
+          $ref: '#/definitions/DataAttributeEntity'
+      dataField:
+        type: string
+        description: The field name of the stock data type. You can specify a maximum of 3 data fields at one time.
+        minLength: 0
+        maxLength: 60
+    title: AssemblyDataItem
+  DataAttributeEntity:
+    type: object
+    required:
+    - dataAttribute
+    properties:
+      dataAttribute:
+        type: string
+        description: The field value of the stock data type
+        minLength: 0
+        maxLength: 1000
+    title: DataAttributeEntity
+  InventorySort:
+    type: object
+    required:
+    - fieldName
+    properties:
+      fieldName:
+        type: string
+        description: Specify the field name that's used to sort the retrieved stock items.
+      order:
+        type: string
+        default: ASC
+        description: 'Specify the sort direction that''s used to sort the retrieved stock items. There are 2 direction types: ''ASC'' (ascending) and ''DESC'' (descending). The default type is ''ASC''. '
+        enum:
+        - ASC
+        - DESC
+    title: InventorySort
+  QueryInventoryResponse:
+    type: object
+    properties:
+      content:
+        type: array
+        description: The stock detail items
+        items:
+          $ref: '#/definitions/QueryInventoryResponseItem'
+      number:
+        type: integer
+        format: int32
+        description: The current page number. The initial page number starts from '0'.
+      numberOfElements:
+        type: integer
+        format: int64
+        description: Indicates how many stocks are returned on the current page
+      totalElements:
+        type: integer
+        format: int64
+        description: Indicates how many stocks are returned in total
+      totalPages:
+        type: integer
+        format: int32
+        description: Indicates how many pages are returned
+    title: QueryInventoryResponse
+  QueryInventoryResponseItem:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/QueryInventoryAssemblyData'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+      createdDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The creation date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material of the stock
+      materialVersion:
+        type: string
+        description: The material version of the stock
+      modifiedDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The modification date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      origin:
+        type: string
+        description: 'The origin of the stock. It indicates where the stock originally comes from. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the stock is stored
+      quantityOnHand:
+        description: The available quantity of the stock
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+      reservedOrder:
+        type: string
+        description: The order for which the stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE'''
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area
+      storageLocation:
+        type: string
+        description: The storage location where the stock is stored
+    title: QueryInventoryResponseItem
+  QueryInventoryAssemblyData:
+    type: object
+    properties:
+      dataAttribute:
+        type: string
+        description: The field value of the stock data type
+        minLength: 0
+        maxLength: 1000
+      dataField:
+        type: string
+        description: The field name of the stock data type
+        minLength: 0
+        maxLength: 60
+      sequence:
+        type: number
+        description: The technical sequence of the stock data fields. You can refer to it to display the data fields in UI.
+      obsolete:
+        type: boolean
+        description: 'Indicates whether the retrieved stock data type is still up-to-date and consistent with the data type information of the relevant material. ''True'' indicates that the data is consistent while ''False'' means the opposite. The property only appears when the ''assemblyDataFilter'' is specified in the request payload. '
+    title: QueryInventoryAssemblyData
+  PostErpGoodsReceiptRequestItem:
+    type: object
+    required:
+    - material
+    - quantity
+    - sfc
+    properties:
+      batchNumber:
+        type: string
+        description: The batch number of the product
+        minLength: 0
+        maxLength: 10
+      comments:
+        type: string
+        description: The comments you want to add to the goods receipt posting
+        minLength: 0
+        maxLength: 4000
+      material:
+        type: string
+        description: The material name of the product
+        minLength: 0
+        maxLength: 40
+      materialVersion:
+        type: string
+        description: The material version of the product
+        minLength: 0
+        maxLength: 20
+      postingDate:
+        type: string
+        format: date
+        example: '2022-09-23'
+        description: 'The posting date of the goods receipt. Format (ISO-8601): YYYY-MM-DD'
+      quantity:
+        description: 'The number of products you want to post in the goods receipt. You can fill either one of the 3 unit of measures. If you provide more than one, they are read in the following order: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure. The quantity value can only be 1 when serial number is filled.'
+        $ref: '#/definitions/Quantity'
+      requireQuantityToleranceCheck:
+        type: boolean
+        description: Specify whether you want to skip tolerance check for goods receipt posting. This field is only applicable when delivery tolerance is enabled in the integrated ERP system. /nSet it to 'true' and the tolerance check is executed, which means you can only post goods receipts within the tolerance limit. Set it to 'false' and the tolerance check is skipped, which means even though the delivery tolerance is enabled in ERP side, you can still post goods receipts in SAP Digital Manufacturing. However, the postings that exceeds the tolerance limit might fail in ERP system. The default value is 'false'.
+      serialNumbers:
+        type: array
+        description: A list of serial numbers for the products. You can only specify one serial number for each goods receipt.
+        items:
+          type: string
+      sfc:
+        type: string
+        description: The SFC number of the product
+        minLength: 0
+        maxLength: 128
+      storageLocation:
+        type: string
+        description: The storage location name of the product
+        minLength: 0
+        maxLength: 4
+    title: PostErpGoodsReceiptRequestItem
+  PostErpGoodsReceiptResponseItem:
+    type: object
+    properties:
+      batchCharacteristicWarningMessage:
+        type: string
+        description: The warning message appears only when the batch characteristics are not set properly for the product.
+      batchNumber:
+        type: string
+        description: The batch number of the product
+      errorCode:
+        type: string
+        description: The error code of the goods receipt posting at line item level
+      errorMessage:
+        type: string
+        description: The error message details
+      hasError:
+        type: boolean
+        description: Indicates whether the goods receipt posting failed or not. 'true' indicates that the posting failed. 'false' indicates that the posting succeeded.
+      inventoryId:
+        type: string
+        description: The inventory ID of the product
+      material:
+        type: string
+        description: The material name of product
+      materialVersion:
+        type: string
+        description: The material version of product
+      serialNumbers:
+        type: array
+        description: A list of serial numbers of the product
+        items:
+          type: string
+      storageLocation:
+        type: string
+        description: The storage location name of product
+      totalQuantityInBaseUnit:
+        description: The total quantity of the product calculated in base unit of measure
+        $ref: '#/definitions/Quantity'
+      transactionId:
+        type: string
+        description: The ID of the goods receipt transaction. It's the ID against which goods receipt cancellation can be performed.
+    title: PostErpGoodsReceiptResponseItem
+  UnitOfMeasure:
+    type: object
+    properties:
+      commercialUnitOfMeasure:
+        type: string
+        description: The SAP commercial unit of measure that's visible on the user interface
+        minLength: 0
+        maxLength: 3
+      internalUnitOfMeasure:
+        type: string
+        description: The SAP internal unit of measure
+        minLength: 0
+        maxLength: 3
+      isoUnitOfMeasure:
+        type: string
+        description: The ISO unit of measure
+        minLength: 0
+        maxLength: 3
+    title: UnitOfMeasure
+  PostEwmGoodsReceiptRequest:
+    type: object
+    required:
+    - lineItems
+    - order
+    - plant
+    properties:
+      lineItems:
+        type: array
+        description: The request details of the goods receipt posting
+        items:
+          $ref: '#/definitions/EwmGoodsReceiptsRequestItem'
+      order:
+        type: string
+        description: The order number for which the goods receipt is performed
+        minLength: 0
+        maxLength: 12
+      plant:
+        type: string
+        description: The plant where the goods receipt is performed
+        minLength: 0
+        maxLength: 6
+      postedBy:
+        type: string
+        description: Specify the person who posted the goods receipt. The person must be a registered user. The property value can be the user ID, user name or user email address, etc.
+        maxLength: 412
+      warehouse:
+        type: string
+        description: The warehouse number where the goods receipt is performed
+        minLength: 0
+        maxLength: 3
+      additionalParameters:
+        type: array
+        items:
+          $ref: '#/definitions/AdditionalParameter'
+        description: The additional parameter of the product
+    title: PostEwmGoodsReceiptRequest
+  PostEwmGoodsReceiptResponse:
+    type: object
+    properties:
+      lineItems:
+        type: array
+        description: The response details of the goods receipt posting
+        items:
+          $ref: '#/definitions/EwmGoodsReceiptsResponseItem'
+      order:
+        type: string
+        description: The order number for which the goods receipt is performed
+      plant:
+        type: string
+        description: The plant where the goods receipt is posted
+      postedBy:
+        type: string
+        description: The user who posted the goods receipt
+      warehouse:
+        type: string
+        description: The warehouse number where the goods receipt is performed
+    title: PostEwmGoodsReceiptResponse
+  EwmGoodsReceiptsRequestItem:
+    type: object
+    required:
+    - material
+    - quantity
+    - sfc
+    - packingMaterial
+    properties:
+      batchNumber:
+        type: string
+        description: The batch number of the product
+        minLength: 0
+        maxLength: 10
+      comments:
+        type: string
+        description: The comments you want to add to the goods receipt posting
+        minLength: 0
+        maxLength: 4000
+      material:
+        type: string
+        description: The material name of the product
+        minLength: 0
+        maxLength: 40
+      materialVersion:
+        type: string
+        description: The material version of the product
+        minLength: 0
+        maxLength: 20
+      packingMaterial:
+        type: string
+        description: The packaging material name of the product
+        minLength: 0
+        maxLength: 40
+      handlingUnit:
+        type: string
+        description: The handling unit number of the product
+        minLength: 0
+        maxLength: 20
+      quantity:
+        description: 'The number of products you want to post in the goods receipt. You can fill either one of the 3 unit of measures. If you provide more than one, they are read in the following order: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure. The quantity value can only be 1 when serial number is filled.'
+        $ref: '#/definitions/Quantity'
+      requireQuantityToleranceCheck:
+        type: boolean
+        description: Specify whether you want to enable tolerance check for goods receipt posting. Set it to 'true' and the tolerance check is enabled. Set it to 'false' and the tolerance check is turned off. The default value is 'false'. /nPlease note that if tolerance is enabled in ERP side, and the value is set to 'false', you can post goods receipts successfully in SAP Digital Manufacturing, but the postings that exceeds the tolerance might fail in the integrated ERP system.
+      serialNumbers:
+        type: array
+        description: A list of serial numbers for the products. You can only specify one serial number for each goods receipt.
+        items:
+          type: string
+      sfc:
+        type: string
+        description: The SFC number of the product
+        minLength: 0
+        maxLength: 128
+      manufacturingDateTime:
+        type: string
+        format: date-time
+        example: '2022-09-23 00:00:00'
+        description: 'The production date time of the product in UTC. Format (ISO-8601): YYYY-MM-DD HH:MM:SS'
+      additionalParameters:
+        type: array
+        items:
+          $ref: '#/definitions/AdditionalParameter'
+        description: The additional custom parameters you want to add to the goods receipt posting
+        minLength: 0
+        maxLength: 100
+    title: EwmGoodsReceiptsRequestItem
+  AdditionalParameter:
+    type: object
+    properties:
+      parameterName:
+        type: string
+        description: The additional custom parameter name
+      parameterValue:
+        type: string
+        description: The additional custom parameter value
+  EwmGoodsReceiptsResponseItem:
+    type: object
+    properties:
+      batchCharacteristicWarningMessage:
+        type: string
+        description: The warning message appears only when the batch characteristics are not set properly for the product.
+      batchNumber:
+        type: string
+        description: The batch number of the product
+      errorCode:
+        type: string
+        description: The error code of the goods receipt posting at line item level
+      errorMessage:
+        type: string
+        description: The error message details
+      hasError:
+        type: boolean
+        description: Indicates whether the goods receipt posting failed or not. 'true' indicates that the posting failed. 'false' indicates that the posting succeeded.
+      inventoryId:
+        type: string
+        description: The inventory ID of the product
+      material:
+        type: string
+        description: The material name of product
+      materialVersion:
+        type: string
+        description: The material version of product
+      packingMaterial:
+        type: string
+        description: The packing material name of product
+      handlingUnit:
+        type: string
+        description: The handling unit number of product
+      serialNumbers:
+        type: array
+        description: A list of serial numbers of the products
+        items:
+          type: string
+      totalQuantityInBaseUnit:
+        description: The total quantity of the product calculated in base unit of measure
+        $ref: '#/definitions/Quantity'
+      transactionId:
+        type: string
+        description: The ID of the goods receipt transaction. It's the ID against which goods receipt cancellation can be performed.
+    title: EwmGoodsReceiptResponseItem
+  CancelGoodsReceiptsRequest:
+    type: object
+    required:
+    - plant
+    - transactionIds
+    properties:
+      plant:
+        type: string
+        description: The plant for which the goods receipt cancellation is performed
+      transactionIds:
+        type: array
+        description: A list of transaction IDs against which the cancellation is performed. You can enter a maximum of 10 transaction IDs with one call. /nA transaction ID refers to the ID of a goods receipt transaction. It corresponds to the 'txnId' field in goods receipt posting response in the Manage Cancellations app. If you use goods receipt public API, the transaction ID is directly returned in the response.
+        items:
+          type: string
+    title: CancelGoodsReceiptsRequest
+  CancelGoodsReceiptsResponse:
+    type: object
+    properties:
+      lineItems:
+        type: array
+        description: Cancellation results
+        items:
+          $ref: '#/definitions/CancelPostingsResponseItem'
+      plant:
+        type: string
+        description: The plant for which goods receipt cancellation is performed
+    title: CancelGoodsReceiptsResponse
+  CancelPostingsResponseItem:
+    type: object
+    properties:
+      error:
+        type: boolean
+      errorCode:
+        type: string
+        description: The error code of goods receipt cancellation at line item level
+      errorMessage:
+        type: string
+        description: The error message details
+      hasError:
+        type: boolean
+        description: Indicates whether the goods receipt cancellation failed or not. 'true' indicates that the cancellation failed. 'false' indicates that the cancellation succeeded.
+      transactionId:
+        type: string
+        description: The transaction ID against which the cancellation is performed. It refers to the ID of a goods receipt transaction.
+    title: CancelPostingsResponseItem
+  GoodsReceiptSummaryResponse:
+    type: object
+    properties:
+      order:
+        type: string
+        description: The order for which the goods receipt is performed
+      quantityInBaseUnit:
+        description: Total goods receipt quantity in base unit of measure.
+        $ref: '#/definitions/Quantity'
+      quantityInProductionUnit:
+        description: Total goods receipt quantity in production unit of measure.
+        $ref: '#/definitions/Quantity'
+      sfcs:
+        type: array
+        description: The list of goods receipts at Shop Floor Control level
+        items:
+          $ref: '#/definitions/Sfc'
+      targetQuantityInProductionUnit:
+        description: Order quantity in production unit of measure. It indicates how many finished goods needs to be manufactured in total for the specified order.
+        $ref: '#/definitions/Quantity'
+    title: GoodsReceiptSummaryResponse
+  Sfc:
+    type: object
+    properties:
+      items:
+        type: array
+        description: The list of goods receipts for a specific Shop Floor Control
+        items:
+          $ref: '#/definitions/GoodsReceiptSummaryItem'
+      sfc:
+        type: string
+        description: The SFC number of the product.
+    title: Sfc
+  GoodsReceiptSummaryItem:
+    type: object
+    properties:
+      batchNumber:
+        type: string
+        description: The batch number of the product.
+      componentType:
+        type: string
+        description: The type of the component.
+        enum:
+        - BY_PRODUCT
+        - CO_PRODUCT
+        - NORMAL
+      handlingUnit:
+        type: string
+        description: The handling unit number of the product.
+      isEWMManagedStorageLocation:
+        type: boolean
+        description: Indicates whether the storage location is managed by EWM.
+      isIMManagedStorageLocation:
+        type: boolean
+        description: Indicates whether the storage location is managed by IM.
+      material:
+        type: string
+        description: The material name of the product.
+      quantityInBaseUnit:
+        description: The number of products calculated in base unit of measure.
+        $ref: '#/definitions/Quantity'
+      quantityInProductionUnit:
+        description: The number of products calculated in production unit of measure.
+        $ref: '#/definitions/Quantity'
+      storageLocation:
+        type: string
+        description: The storage location of product.
+      targetQuantityInProductionUnit:
+        description: Indicates how many products needs to be manufactured for the specified Shop Floor Control in production unit of measure
+        $ref: '#/definitions/Quantity'
+    title: GoodsReceiptSummaryItem
+  Page_GetStorageLocationResponse:
+    type: object
+    properties:
+      content:
+        type: array
+        items:
+          $ref: '#/definitions/GetStorageLocationResponse'
+      number:
+        description: The current page number. The initial page number starts with '0'.
+        type: integer
+        format: int32
+      numberOfElements:
+        description: The number of batches on the current page
+        type: integer
+        format: int32
+      totalElements:
+        description: The total number of batches that are returned
+        type: integer
+        format: int64
+      totalPages:
+        description: The total number of pages that are returned
+        type: integer
+        format: int32
+    title: Page_GetStorageLocationResponse
+  GetStorageLocationResponse:
+    type: object
+    properties:
+      description:
+        type: string
+        description: Description of storage location.
+      isCentralStorageLocation:
+        type: boolean
+        description: Indicates whether it is a central storage location or not
+      isEWMManagedStorageLocation:
+        type: boolean
+        description: Indicates whether it is a storage location managed by Extended Warehouse Management or not
+      isProductionStorageLocation:
+        type: boolean
+        description: Indicates whether it is a production storage location or not
+      storageLocation:
+        type: string
+        description: The storage location name
+    title: GetStorageLocationResponse
+  CreateInventoryRequest:
+    type: object
+    required:
+    - material
+    - materialVersion
+    - origin
+    - plant
+    - quantity
+    - status
+    - storageLocation
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyData'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+        minLength: 0
+        maxLength: 10
+      comments:
+        type: string
+        description: The comments you want to add to the stock
+        minLength: 0
+        maxLength: 1000
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package. This property only applies to stocks with DMC or EWM origin, and it is mandatory when stock origin is EWM.
+        minLength: 0
+        maxLength: 20
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock
+        minLength: 0
+        maxLength: 128
+        pattern: ^(?! )[0-9A-Z_$!)(+~@^=\-*. ]+(?<! )$
+      material:
+        type: string
+        description: The material of the stock. Note the material origin of the material you specify here. To create stocks with ERP or EWM origins, you can only use ERP materials. To create stocks with DMC origin, use DMC materials.
+        minLength: 0
+        maxLength: 40
+      materialVersion:
+        type: string
+        description: The material version of the stock
+        minLength: 0
+        maxLength: 20
+      origin:
+        type: string
+        description: 'The origin of the stock. Stocks of different origins are consumed differently in the system. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''. To create a stock with ''ERP'' or ''EWM'' origin, you need to firstly enable External Inventory Management in the Manage Business Settings app.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      plant:
+        type: string
+        description: The plant where the stock resides
+        minLength: 0
+        maxLength: 6
+      productionSupplyArea:
+        type: string
+        description: The production supply area of the stock. You can only specify here one production supply area that exists in SAP Digital Manufacturing. This property only applies to stocks with DMC or EWM origin, and it is mandatory when the stock origin is EWM.
+        minLength: 0
+        maxLength: 10
+      quantity:
+        description: 'Indicates how many items there are in the stock. The unit of measure is chosen in order of: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure.'
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved. This property only applies to stocks with DMC or ERP origin.
+        minLength: 0
+        maxLength: 412
+      reservedOrder:
+        type: string
+        description: The order number for which the stock is reserved. This property only applies to stocks with DMC or ERP origin.
+        minLength: 0
+        maxLength: 36
+      serialNumber:
+        type: string
+        description: The serial number of the stock. You can only specify serial number when the quantity of the stock is 1.
+        minLength: 0
+        maxLength: 18
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area. This property only applies to stocks with DMC or EWM origin, and it is mandatory when the stock origin is EWM.
+        minLength: 0
+        maxLength: 18
+      storageLocation:
+        type: string
+        description: The storage location of the stock
+        minLength: 0
+        maxLength: 4
+      warehouse:
+        type: string
+        description: The warehouse from which the stock is staged in the integrated EWM system. This property only applies to stock with EWM origin, and it is mandatory.
+        minLength: 0
+        maxLength: 3
+    title: CreateInventoryRequest
+  CreateBulkInventoriesRequest:
+    type: object
+    required:
+    - lineItems
+    - origin
+    - plant
+    properties:
+      plant:
+        type: string
+        description: The plant where the stock resides
+        minLength: 0
+        maxLength: 6
+      origin:
+        type: string
+        description: 'The origin of the stock. Stocks of different origins are consumed differently in the system. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''. To create a stock with ''ERP'' or ''EWM'' origin, you need to firstly enable External Inventory Management in the Manage Business Settings app.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      lineItems:
+        type: array
+        items:
+          $ref: '#/definitions/PostCreateBulkInventoriesItem'
+    title: CreateBulkInventoriesRequest
+  PostCreateBulkInventoriesItem:
+    type: object
+    required:
+    - material
+    - materialVersion
+    - quantity
+    - status
+    - storageLocation
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyData'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+        minLength: 0
+        maxLength: 10
+      comments:
+        type: string
+        description: The comments you want to add to the stock
+        minLength: 0
+        maxLength: 1000
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package. This property only applies to stocks with DMC or EWM origin, and it is mandatory when stock origin is EWM.
+        minLength: 0
+        maxLength: 20
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock
+        minLength: 0
+        maxLength: 128
+        pattern: ^(?! )[0-9A-Z_$!)(+~@^=\-*. ]+(?<! )$
+      material:
+        type: string
+        description: The material of the stock. Note the material origin of the material you specify here. To create stocks with ERP or EWM origins, you can only use ERP materials. To create stocks with DMC origin, use DMC materials
+        minLength: 0
+        maxLength: 40
+      materialVersion:
+        type: string
+        description: The material version of the stock
+        minLength: 0
+        maxLength: 20
+      productionSupplyArea:
+        type: string
+        description: The production supply area of the stock. You can only specify here one production supply area that exists in SAP Digital Manufacturing. This property only applies to stocks with DMC or EWM origin, and it is mandatory when the stock origin is EWM.
+        minLength: 0
+        maxLength: 10
+      quantity:
+        description: 'Indicates how many items there are in the stock. The unit of measure is chosen in order of: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure.'
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved. This property only applies to stocks with DMC or ERP origin.
+        minLength: 0
+        maxLength: 412
+      reservedOrder:
+        type: string
+        description: The order number for which the stock is reserved. This property only applies to stocks with DMC or ERP origin.
+        minLength: 0
+        maxLength: 36
+      serialNumber:
+        type: string
+        description: The serial number of the stock. You can only specify serial number when the quantity of the stock is 1.
+        minLength: 0
+        maxLength: 18
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area. This property only applies to stocks with DMC or EWM origin, and it is mandatory when the stock origin is EWM.
+        minLength: 0
+        maxLength: 18
+      storageLocation:
+        type: string
+        description: The storage location of the stock
+        minLength: 0
+        maxLength: 4
+      warehouse:
+        type: string
+        description: The warehouse from which the stock is staged in the integrated EWM system. This property only applies to stock with EWM origin, and it is mandatory.
+        minLength: 0
+        maxLength: 3
+    title: PostCreateBulkInventoriesItem
+  InventoryAssemblyData:
+    type: object
+    properties:
+      dataAttribute:
+        type: string
+        description: The field value of the stock data type
+        minLength: 0
+        maxLength: 1000
+      dataField:
+        type: string
+        description: The field name of the stock data type
+        minLength: 0
+        maxLength: 60
+    title: InventoryAssemblyData
+  CreateInventoryResponse:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyDataDto'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+      comments:
+        type: string
+        description: The comments added to the stock
+        minLength: 0
+        maxLength: 1000
+      createdDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The creation date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material of the stock
+      materialVersion:
+        type: string
+        description: The material version of the stock
+      modifiedDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The modification date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      origin:
+        type: string
+        description: 'The origin of the stock. Stocks of different origins are consumed differently in the system. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''. To create a stock with ''ERP'' or ''EWM'' origin, you need to firstly enable External Inventory Management in the Manage Business Settings app.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the stock is stored
+      quantityOnHand:
+        description: The available quantity of the stock
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+      reservedOrder:
+        type: string
+        description: The order number for which the stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area
+      storageLocation:
+        type: string
+        description: The storage location of the stock
+      warehouse:
+        type: string
+        description: The warehouse from which the stock is staged in the integrated EWM system
+    title: CreateInventoryResponse
+  CreateBulkInventoriesResponse:
+    type: object
+    properties:
+      lineItems:
+        type: array
+        description: create bulk inventories results
+        items:
+          $ref: '#/definitions/CreateBulkInventoriesResponseItem'
+      origin:
+        type: string
+        description: 'The origin of the stock. Stocks of different origins are consumed differently in the system. There are 3 possible origins: ''DMC'', ''ERP'' and ''EWM''.'
+        enum:
+        - DMC
+        - ERP
+        - EWM
+      plant:
+        type: string
+        description: The plant for which the stock creation is performed
+    title: CreateBulkInventoriesResponse
+  CreateBulkInventoriesResponseItem:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyDataDto'
+      batchNumber:
+        type: string
+        description: The batch number of the stock
+      comments:
+        type: string
+        description: The comments added to the stock
+        minLength: 0
+        maxLength: 1000
+      createdDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The creation date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material of the stock
+      materialVersion:
+        type: string
+        description: The material version of the stock
+      modifiedDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The modification date time of the stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the stock is stored
+      quantityOnHand:
+        description: The available quantity of the stock
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+      reservedOrder:
+        type: string
+        description: The order number for which the stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the stock
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the stock is stored at the production supply area
+      storageLocation:
+        type: string
+        description: The storage location of the stock
+      warehouse:
+        type: string
+        description: The warehouse from which the stock is staged in the integrated EWM system
+    title: CreateBulkInventoriesResponseItem
+  UpdateInventoryRequest:
+    type: object
+    required:
+    - lastModifiedDateTime
+    properties:
+      quantityToReceive:
+        description: 'The quantity to be received. The quantity specified here is added to the original on-hand quantity of the stock. You need to fill at least one of the unit of measures. If multiple unit of measures are filled, the actual applied unit of measure is defined in the following order: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure'
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the stock is reserved
+        minLength: 0
+        maxLength: 390
+      reservedOrder:
+        type: string
+        description: The order for which the stock is reserved
+        minLength: 0
+        maxLength: 36
+      serialNumber:
+        type: string
+        description: The serial number of the stock. It is only supported when the stock on-hand quantity is '1' in base unit of measure.
+        minLength: 0
+        maxLength: 18
+      status:
+        type: string
+        description: 'The status of the stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      comments:
+        type: string
+        description: The comments of the stock
+        minLength: 0
+        maxLength: 4000
+      assemblyData:
+        type: array
+        description: The assembly data of the stock. Only the assembly data field value can be updated with this API. Adding or changing assembly data field name is not supported. You can also remove a particular data field value, by passing the field name without filling the field value
+        items:
+          $ref: '#/definitions/InventoryAssemblyData'
+      lastModifiedDateTime:
+        type: string
+        format: date-time
+        example: '2021-07-29T03:53:33.123Z'
+        description: 'The date time when the stock was most recently changed in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z''. Filling this field can help avoid unexpected data modification when concurrent operations are executed attempting to change the same data entry. To retrieve ''lastModifiedDateTime'', you can use the corresponding GET API and extract the value of ''lastModifiedDateTime'' from the response body.'
+    title: UpdateInventoryRequest
+  UpdateInventoryResponse:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyDataDto'
+      batchNumber:
+        type: string
+        description: The batch number of the updated stock
+      comments:
+        type: string
+        description: The comments added to the updated stock
+        minLength: 0
+        maxLength: 1000
+      createdDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The creation date time of the original stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the updated stock in SAP Digital Manufacturing
+      material:
+        type: string
+        description: The material of the updated stock
+      materialVersion:
+        type: string
+        description: The material version of the updated stock
+      modifiedDateTime:
+        type: string
+        format: date-time
+        example: 2022-06-22T04:24:000Z
+        description: 'The date time when the updated stock was most recently changed in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+      origin:
+        type: string
+        description: The origin of the updated stock. For this API call, the returned origin should always be 'DMC'.
+        enum:
+        - DMC
+      productionSupplyArea:
+        type: string
+        description: The production supply area where the updated stock is stored
+      quantityOnHand:
+        description: The available quantity of the updated stock
+        $ref: '#/definitions/GetInventoryResponseItemQuantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the updated stock is reserved
+      reservedOrder:
+        type: string
+        description: The order number for which the updated stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the updated stock. It's only supported when the on-hand quantity of the updated stock is '1' in base unit of measure.
+      status:
+        type: string
+        description: 'The status of the updated stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageBin:
+        type: string
+        description: The storage bin where the updated stock is stored at the production supply area
+      storageLocation:
+        type: string
+        description: The storage location of the updated stock
+      warehouse:
+        type: string
+        description: The warehouse from which the updated stock is staged in the integrated EWM system
+    title: UpdateInventoryResponse
+  TransferInventoryRequest:
+    type: object
+    required:
+    - lastModifiedDateTime
+    - inventoryId
+    - plant
+    - quantity
+    - storageLocation
+    properties:
+      assemblyData:
+        type: array
+        items:
+          $ref: '#/definitions/InventoryAssemblyData'
+      comments:
+        type: string
+        description: The comments you want to add to the new stock
+        minLength: 0
+        maxLength: 1000
+      inventoryId:
+        type: string
+        description: The inventory ID of the original stock to which stock transfer is performed
+        minLength: 0
+        maxLength: 128
+        pattern: ^(?! )[0-9A-Z_$!)(+~@^=\-*. ]+(?<! )$
+      lastModifiedDateTime:
+        type: string
+        description: 'The date time when the stock was most recently changed in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z''. Filling this field can help avoid unexpected data modification when concurrent operations are executed attempting to change the same data entry. To retrieve ''lastModifiedDateTime'', you can use the corresponding GET API and extract the value of ''lastModifiedDateTime'' from the response body.'
+        format: date-time
+        example: '2021-07-29T03:53:33.123Z'
+      plant:
+        type: string
+        description: The plant of the stock
+        minLength: 0
+        maxLength: 6
+      quantity:
+        description: 'The quantity of the stock that''s transferred. The quantity is the on-hand quantity of the new stock. You need to fill at least one of the unit of measures. If multiple unit of measures are filled, the actual applied unit of measure is defined in the following order: internalUnitOfMeasure, isoUnitOfMeasure, commercialUnitOfMeasure.'
+        $ref: '#/definitions/Quantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the new stock is reserved
+        minLength: 0
+        maxLength: 412
+      reservedOrder:
+        type: string
+        description: The order for which the new stock is reserved
+        minLength: 0
+        maxLength: 36
+      serialNumber:
+        type: string
+        description: The serial number of the new stock. It is only supported when the stock on-hand quantity is '1' in base unit of measure.
+        minLength: 0
+        maxLength: 18
+      status:
+        type: string
+        description: 'The status of the new stock. There are 3 possible statuses: ''AVAILABLE'', ''HOLD'' and ''QUARANTINE''.'
+        enum:
+        - AVAILABLE
+        - HOLD
+        - QUARANTINE
+      storageLocation:
+        type: string
+        description: The destination storage location to which the stock is transferred. It is the storage location of the new stock.
+        minLength: 0
+        maxLength: 4
+    title: TransferInventoryRequest
+  TransferInventoryResponse:
+    type: object
+    properties:
+      assemblyData:
+        type: array
+        description: The assembly data of the new stock
+        items:
+          $ref: '#/definitions/InventoryAssemblyDataDto'
+      batchNumber:
+        type: string
+        description: The batch number of the new stock
+      comments:
+        type: string
+        description: The comments of the new stock
+      createdDateTime:
+        type: string
+        description: 'The creation date time of the new stock in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+        format: date-time
+        example: '2021-07-29T03:53:33.123Z'
+      handlingUnit:
+        type: string
+        description: The handling unit number of the innermost package
+      inventoryId:
+        type: string
+        description: The inventory ID of the new stock
+      material:
+        type: string
+        description: The material of the new stock
+      materialVersion:
+        type: string
+        description: The material version of the new stock
+      modifiedDateTime:
+        type: string
+        description: 'The date time when the stock was most recently changed in UTC. Format (ISO-8601): yyyy-MM-dd''T''HH:mm:ss.SSS''Z'''
+        format: date-time
+        example: '2021-07-29T03:53:33.123Z'
+      origin:
+        type: string
+        description: The origin of the new stock. It should always be DMC.
+      productionSupplyArea:
+        type: string
+        description: The production supply area of the new stock
+      quantityOnHand:
+        description: The on-hand quantity of the new stock
+        $ref: '#/definitions/Quantity'
+      reservedOperation:
+        type: string
+        description: The operation for which the new stock is reserved
+      reservedOrder:
+        type: string
+        description: The order for which the new stock is reserved
+      serialNumber:
+        type: string
+        description: The serial number of the new stock
+      status:
+        type: string
+        description: The status of the new stock
+      storageBin:
+        type: string
+        description: The storage bin of the new stock
+      storageLocation:
+        type: string
+        description: The storage location of the new stock
+    title: TransferInventoryResponse
+x-sap-shortText: Perform inventory relevant activities, such as posting or canceling goods receipts, getting stock information, and updating stock data
+x-servers:
+- url: https://api.{regionHost}/inventory/v1
+  description: Base URL
+  templates:
+    regionHost:
+      description: The data center where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.dmc.cloud.sap
+      - us10.dmc.cloud.sap
+      - eu20.dmc.cloud.sap
+      - us20.dmc.cloud.sap
+      - test.eu10.dmc.cloud.sap
+      - test.us10.dmc.cloud.sap
+      - test.eu20.dmc.cloud.sap
+      - test.us20.dmc.cloud.sap
+      default: test.eu10.dmc.cloud.sap
+    tokenHost:
+      description: The authentication token server where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.hana.ondemand.com
+      - us10.hana.ondemand.com
+      - eu20.hana.ondemand.com
+      - us20.hana.ondemand.com
+      default: eu10.hana.ondemand.com

@@ -1,0 +1,212 @@
+swagger: '2.0'
+info:
+  description: "A tool is a movable operating resource used in production and that can be used repeatedly. When integrated with SAP ERP systems, production resources/tools (PRTs) in ERP systems can be downloaded as tools in SAP Digital Manufacturing. \nYou can use this API service to perform a series of tool-relevant operations such as enabling automatic logging of tool usage for shop floor controls."
+  version: v1
+  title: Tool
+  contact:
+    name: SAP Digital Manufacturing Operations
+    email: sap-dmoperation@sap.com
+externalDocs:
+  description: Prepare for API Integration
+  url: https://help.sap.com/docs/sap-digital-manufacturing/operations-guide/prepare-for-api-integration
+schemes:
+- https
+host: hostname
+basePath: /
+tags:
+- name: Tool Usage Logging
+- name: Tool Validation
+security:
+- OauthClientCredentials: []
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /toolUsageLogs:
+    post:
+      tags:
+      - Tool Usage Logging
+      summary: Sets automatic logging of tool usage for SFCs
+      description: Enables automatic logging of tool usage for SFCs that have already been started and are not yet done. Only tools specified with automatic logging method would be logged.
+      operationId: saveToolUsageLogsUsingPOST_2
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/LogToolUsage'
+      responses:
+        '204':
+          description: The tool has been automatically logged.
+        '400':
+          description: The HTTP request is invalid and can't be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Invalid or expired token.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: You are not authorized to access the resource.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Some required properties (e.g. sfc or operation) couldn't be retrieved.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: There was an internal error somewhere in the call chain.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      deprecated: false
+  /prtLoadValidation:
+    post:
+      tags:
+      - Tool Validation
+      summary: Get tool validation result for loaded tools
+      description: "Validate loaded tools by checking the alignment between loaded tools and PRT assignments. \nThere are 2 possible validation results: PRT_PASSED, FAILED."
+      operationId: prtLoadValidationPOST
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/ValidatePrtLoadRequest'
+      responses:
+        '200':
+          description: Find PrtLoad Validation Result was successfully.
+          schema:
+            $ref: '#/definitions/ValidationResultResponse'
+        '400':
+          description: The HTTP request is invalid and can't be processed by the server.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: Invalid or expired token.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: You are not authorized to access the resource.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: Some required properties (e.g. sfc or operation) couldn't be retrieved.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: There was an internal error somewhere in the call chain.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      deprecated: false
+securityDefinitions:
+  OauthClientCredentials:
+    type: oauth2
+    tokenUrl: https://{subdomain}.authentication.{tokenHost}/oauth/token
+    flow: application
+definitions:
+  LogToolUsage:
+    type: object
+    required:
+    - operation
+    - plant
+    - resource
+    - sfcs
+    properties:
+      operation:
+        type: string
+        description: The operation against which the tool usage is logged
+      plant:
+        type: string
+        description: The plant for which the tool usage is logged
+      resource:
+        type: string
+        description: The resource to which the tool is assigned
+      sfcs:
+        type: array
+        description: The list of SFCs for which the tool usage is logged
+        items:
+          type: string
+    title: LogToolUsage
+  ValidatePrtLoadRequest:
+    type: object
+    required:
+    - plant
+    - sfc
+    - operation
+    - resource
+    properties:
+      plant:
+        type: string
+        description: The plant where the loaded tools are validated
+      sfcs:
+        type: array
+        description: The SFCs of the loaded tools
+        items:
+          type: string
+      operation:
+        type: string
+        description: The operation of the loaded tools
+      resource:
+        type: string
+        description: The resource of the loaded tools
+    title: ValidateTool
+  ValidationResultResponse:
+    type: object
+    properties:
+      validationResult:
+        type: string
+        description: 'The validation result of the loaded tools. 1. PRT_PASSED: Tool validation passed. All loaded tools align with planned PRT; 2. FAILED: Tool validation failed. There are loaded tools that do not align with planned PRT.'
+        enum:
+        - PRT_PASSED
+        - FAILED
+    title: ValidateToolResult
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Contains error code
+      correlationId:
+        type: string
+        description: Contains a correlation ID for the error.
+      message:
+        type: string
+        description: Contains additional information if any.
+    title: ErrorResponse
+    description: Error response
+x-sap-shortText: Perform production tool related operations such as tool usage logging and tool validation
+x-servers:
+- url: https://api.{regionHost}/tool/v1
+  description: Base URL
+  templates:
+    regionHost:
+      description: The data center where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.dmc.cloud.sap
+      - us10.dmc.cloud.sap
+      - eu20.dmc.cloud.sap
+      - us20.dmc.cloud.sap
+      - test.eu10.dmc.cloud.sap
+      - test.us10.dmc.cloud.sap
+      - test.eu20.dmc.cloud.sap
+      - test.us20.dmc.cloud.sap
+      default: test.eu10.dmc.cloud.sap
+    tokenHost:
+      description: The authentication token server where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.hana.ondemand.com
+      - us10.hana.ondemand.com
+      - eu20.hana.ondemand.com
+      - us20.hana.ondemand.com
+      default: eu10.hana.ondemand.com

@@ -1,0 +1,286 @@
+swagger: '2.0'
+info:
+  description: You can use this service to retrieve all the operations that are scheduled on work centers/resources running on the shop floor for a given plant supervisor and a specified date range. The retrieved order information  is grouped logically. The service provides details of schedules such as operation dates, set up dates and times, processing duration, status, unit of measure, and information on the work centers or resources to which the orders are dispatched.
+  version: v1
+  title: Order Schedules
+  contact:
+    name: SAP Digital Manufacturing Operations
+    email: sap-dmoperation@sap.com
+host: hostname
+basePath: /
+tags:
+- name: Order Schedules
+security:
+- OAuthSecurity: []
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /shoporderschedules:
+    post:
+      tags:
+      - Order Schedules
+      summary: Provides the shop order schedules of a plant for a given date range.
+      description: Retrieve all operations scheduled on a shop floor for a date range.
+      operationId: getShopOrderScheduleUsingPOST
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/ShopOrderScheduleRequest'
+      responses:
+        '200':
+          description: Shop Order Schedule retrieved successfully.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ShopOrderSchedule'
+        '201':
+          description: Created
+        '400':
+          description: Wrong format or structure of the provided request body.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '403':
+          description: Access denied. You did not have the required permissions to access the resource.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      deprecated: false
+definitions:
+  ErrorResponse:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Internal error message
+      correlationId:
+        type: string
+        description: Contains a correlation ID for the error.
+      message:
+        type: string
+        description: Contains additional information if any.
+    title: ErrorResponse
+    description: Error response
+  ShopOrderSchedule:
+    type: object
+    properties:
+      confirmedQuantity:
+        type: string
+        description: Specifies the confirmed quantity.
+      createdDateTime:
+        type: string
+        description: Specifies the created date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      customer:
+        type: string
+        description: Specifies the customer.
+      customerOrder:
+        type: string
+        description: Specifies the customer order.
+      dispatched:
+        type: boolean
+        description: Specifies whether to include dispatched orders.
+      earliestProcessingStartDateTime:
+        type: string
+        description: Specifies the earliest processing start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      earliestSetupStartDateTime:
+        type: string
+        description: Specifies the earliest setup start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      earliestTeardownEndDateTime:
+        type: string
+        description: Specifies the earliest teardown end date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      earliestTeardownStartDateTime:
+        type: string
+        description: Specifies the earliest teardown start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      endDateTime:
+        type: string
+        description: Specifies the end date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      erpOrder:
+        type: string
+        description: Specifies the ERP order.
+      fixIndicator:
+        type: boolean
+        description: Specifies whether to include fix indicator.
+      includeShiftBreaks:
+        type: boolean
+        description: Specifies whether to include shift breaks.
+      item:
+        type: string
+        description: Specifies the material.
+      itemGroup:
+        type: string
+        description: Specifies the material group.
+      latestProcessingStartDateTime:
+        type: string
+        description: Specifies the latest processing start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      latestSetupStartDateTime:
+        type: string
+        description: Specifies the latest setup start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      latestTeardownEndDateTime:
+        type: string
+        description: Specifies the latest teardown end date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      latestTeardownStartDateTime:
+        type: string
+        description: Specifies the latest teardown start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      modifiedDateTime:
+        type: string
+        description: Specifies the modified date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      opSplitId:
+        type: integer
+        format: int32
+        description: Specifies the operation split Id.
+      operation:
+        type: string
+        description: Specifies the operation.
+      orderPlannedCompDate:
+        type: string
+        description: Specifies the order planned complete date. Format(YYYY-MM-DD).
+      orderPlannedCompTime:
+        type: string
+        description: Specifies the order planned complete time. Format(hh:mm:ss).
+      orderPlannedStartDate:
+        type: string
+        description: Specifies the order planned start date. Format(YYYY-MM-DD).
+      orderPlannedStartTime:
+        type: string
+        description: Specifies the order planned start time. Format(hh:mm:ss).
+      orderScheduledStartDate:
+        type: string
+        description: Specifies the order scheduled start date. Format(YYYY-MM-DD).
+      orderScheduledStartTime:
+        type: string
+        description: Specifies the order scheduled start time. Format(hh:mm:ss).
+      planProcessingTime:
+        type: string
+        description: Specifies the plan processing time.
+      planSetupTime:
+        type: string
+        description: Specifies the plan setup time.
+      planTearDownTime:
+        type: string
+        description: Specifies the plan teardown time.
+      plantId:
+        type: string
+        description: Specifies the plant Id.
+      priority:
+        type: string
+        description: Specifies the priority.
+      processingTimeUom:
+        type: string
+        description: Specifies the processing time UOM.
+      quantityReleased:
+        type: string
+        description: Specifies the quantity released.
+      quantityToBuild:
+        type: integer
+        format: int32
+        description: Specifies the quantity to build.
+      releasedDateTime:
+        type: string
+        description: Specifies the released date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      resourceRefId:
+        type: string
+        description: Specifies the resource Id.
+      resourceType:
+        type: string
+        description: Specifies the resource type.
+      routerBO:
+        type: string
+        description: Specifies the router.
+      sequence:
+        type: string
+        description: Specifies the sequence.
+      setupTimeUom:
+        type: string
+        description: Specifies the setup time UOM.
+      shopOrder:
+        type: string
+        description: Specifies the shop order.
+      splitQuantity:
+        type: integer
+        format: int32
+        description: Specifies the split quantity.
+      startDateTime:
+        type: string
+        description: Specifies the start date and time. Format(YYYY-MM-DDThh:mm:ssZ).
+      tearDownTimeUom:
+        type: string
+        description: Specifies the teardown time UOM.
+      unitOfMeasure:
+        type: string
+        description: Specifies the unit of measure.
+    title: ShopOrderSchedule
+  ShopOrderScheduleRequest:
+    type: object
+    required:
+    - endDateTime
+    - plant
+    - startDateTime
+    - user
+    properties:
+      endDateTime:
+        type: string
+        description: The horizon end date and time till when shop order schedules needs to be fetched in UTC. Format(YYYY-MM-DDThh:mm:ssZ).
+      plant:
+        type: string
+        description: The plant for which the request is executed.
+      startDateTime:
+        type: string
+        description: The horizon start date and time from when the shop order schedules needs to be fetched in UTC. Format(YYYY-MM-DDThh:mm:ssZ).
+      user:
+        type: string
+        description: The ID of the user for which shop order schedules needs to be fetched.
+    title: ShopOrderScheduleRequest
+securityDefinitions:
+  OAuthSecurity:
+    type: oauth2
+    tokenUrl: https://{subdomain}.authentication.{tokenHost}/oauth/token
+    flow: application
+externalDocs:
+  description: Prepare for API Integration
+  url: https://help.sap.com/docs/sap-digital-manufacturing/operations-guide/prepare-for-api-integration
+schemes:
+- https
+x-sap-shortText: Retrieve the order schedules of a plant for a specific date range
+x-servers:
+- url: https://api.{regionHost}/reo/v1
+  description: Base URL
+  templates:
+    regionHost:
+      description: The data center where SAP Digital Manufacturing is provisioned for your organization.
+      enum:
+      - eu10.dmc.cloud.sap
+      - eu20.dmc.cloud.sap
+      - us10.dmc.cloud.sap
+      - us20.dmc.cloud.sap
+      - test.eu10.dmc.cloud.sap
+      - test.eu20.dmc.cloud.sap
+      - test.us10.dmc.cloud.sap
+      - test.us20.dmc.cloud.sap
+      default: test.eu10.dmc.cloud.sap
+    tokenHost:
+      description: The authentication server where SAP Digital Manufacturing is provisioned for your organization.
+      enum:
+      - eu10.hana.ondemand.com
+      - eu20.hana.ondemand.com
+      - us10.hana.ondemand.com
+      - us20.hana.ondemand.com
+      default: eu10.hana.ondemand.com

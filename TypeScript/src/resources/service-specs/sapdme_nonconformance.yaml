@@ -1,0 +1,886 @@
+swagger: '2.0'
+info:
+  description: 'In a manufacturing process, product defects are often found as part of quality checks. Use this service to log nonconformances for product defects, retrieve logged nonconformances and to disposition nonconformance SFCs. '
+  version: v1
+  title: Nonconformance
+  contact:
+    name: SAP Digital Manufacturing Operations
+    email: sap-dmoperation@sap.com
+host: hostname
+basePath: /
+tags:
+- name: Nonconformance
+  description: Non Conformance Api Controller
+consumes:
+- application/json
+produces:
+- application/json
+security:
+- OauthClientCredentials: []
+paths:
+  /log:
+    post:
+      tags:
+      - Nonconformance
+      summary: Logs a nonconformance.
+      description: Logs a nonconformance for SFCs at a given operation for a given plant.
+      operationId: logNonConformanceUsingPOST_1
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/LogNonConformanceRequest'
+      responses:
+        '200':
+          description: Nonconformance logged
+          schema:
+            $ref: '#/definitions/NonConformanceLogResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/error'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: An internal error occured.
+          schema:
+            $ref: '#/definitions/error'
+      security:
+      - OauthClientCredentials: []
+      deprecated: false
+  /checkForOpen:
+    post:
+      tags:
+      - Nonconformance
+      summary: Check for open nonconformances
+      description: Check for open nonconformance by the given SFCs.
+      operationId: checkForOpenNonConformancesUsingPOST
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/CheckOpenNonConformancesRequest'
+      responses:
+        '200':
+          description: There is no open nonconformance for given SFCs.
+        '400':
+          description: 'There are two cases: 1. An open nonconformance was found. See the error message with the list of open nonconformances. 2. The HTTP request is bad or invalid and cannot be processed by the server.'
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/error'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/error'
+      deprecated: false
+  /close:
+    post:
+      tags:
+      - Nonconformance
+      summary: Closes a nonconformance.
+      description: Closes a nonconformance by the given incident ID.
+      operationId: closeNonConformanceUsingPOST
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/CloseNonConformanceRequest'
+      responses:
+        '204':
+          description: The nonconformance is closed by the given incident ID.
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/error'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: An internal error occurred or nonconformance was not found.
+          schema:
+            $ref: '#/definitions/error'
+      security:
+      - OauthClientCredentials: []
+      deprecated: false
+  /open:
+    post:
+      tags:
+      - Nonconformance
+      summary: Opens a nonconformance.
+      description: Opens a nonconformance by the incident ID.
+      operationId: openNonconformanceUsingPOST
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/OpenNonConformanceRequest'
+      responses:
+        '204':
+          description: The nonconformance is reopened for the given incident ID.
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/error'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: An internal error occurred or nonconformance was not found.
+          schema:
+            $ref: '#/definitions/error'
+      security:
+      - OauthClientCredentials: []
+      deprecated: false
+  /nonconformances:
+    get:
+      tags:
+      - Nonconformance
+      summary: Retrieves a non-conformance list.
+      description: Retrieves a nonconformance list for a given plant by various optional parameters.
+      operationId: getNonConformancesUsingGET_1
+      parameters:
+      - name: operationActivity
+        in: query
+        description: The operation activity with the current version to search for nonconformances.
+        required: false
+        type: string
+        maxLength: 36
+        minLength: 1
+      - name: plant
+        in: query
+        description: The plant to search for nonconformances.
+        required: true
+        type: string
+        maxLength: 6
+        minLength: 1
+      - name: resource
+        in: query
+        description: The resource to search for nonconformances.
+        required: false
+        type: string
+        maxLength: 36
+        minLength: 1
+      - name: routing
+        in: query
+        description: The routing with the current version to search for nonconformances.
+        required: false
+        type: string
+        maxLength: 128
+        minLength: 1
+      - name: routingStepId
+        in: query
+        description: The routing step to search for nonconformances.
+        required: false
+        type: string
+        maxLength: 6
+        minLength: 1
+      - name: sfc
+        in: query
+        description: The SFC to search for nonconformances.
+        required: false
+        type: string
+        maxLength: 128
+        minLength: 1
+      responses:
+        '200':
+          description: Nonconformance logged.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/NonConformance'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/error'
+        '401':
+          description: You are not authorized to call this resource.
+          schema:
+            $ref: '#/definitions/error'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '500':
+          description: An internal error occured.
+          schema:
+            $ref: '#/definitions/error'
+      security:
+      - OauthClientCredentials: []
+      deprecated: false
+  /sfcs/disposition:
+    post:
+      tags:
+      - SFCs disposition
+      summary: Route nonconformant SFCs based on disposition settings.
+      description: Performs the disposition of nonconformant SFCs at a given resource. A nonconformance incident has a nonconformance code with associated disposition routings. If there are several options for the disposition like several disposition routings in the NC code, a service returns DispositionOption objects for the selection. To select an option for the disposition of the SFC this API must be called again with the selected options.
+      operationId: dispositionUsingPOST
+      parameters:
+      - in: body
+        name: request
+        description: request
+        required: true
+        schema:
+          $ref: '#/definitions/SfcDispositionRequest'
+      responses:
+        '200':
+          description: Disposition of the nonconformant SFCs is successful.
+          schema:
+            $ref: '#/definitions/SfcDispositionResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          schema:
+            $ref: '#/definitions/error'
+        '404':
+          description: One of the related elements is not found.
+          schema:
+            $ref: '#/definitions/error'
+        '409':
+          description: The nonconformant SFC has to be dispositioned to available routes.
+          schema:
+            $ref: '#/definitions/DispositionSelectionResponse'
+        '500':
+          description: An internal error occurred.
+          schema:
+            $ref: '#/definitions/error'
+      security:
+      - OauthClientCredentials: []
+      deprecated: false
+securityDefinitions:
+  OauthClientCredentials:
+    type: oauth2
+    tokenUrl: https://{subdomain}.authentication.{tokenHost}/oauth/token
+    flow: application
+definitions:
+  CustomValue:
+    type: object
+    properties:
+      attribute:
+        type: string
+      value:
+        type: string
+    title: CustomValue
+  DataField:
+    type: object
+    properties:
+      key:
+        type: string
+        description: The name the data field.
+        minLength: 1
+        maxLength: 60
+      value:
+        type: string
+        description: The value of the data field.
+        minLength: 1
+        maxLength: 1024
+    title: DataField
+    description: Name/value pair to be collected as part of logging a Non Conformance.
+  IncidentNumber:
+    type: object
+    properties:
+      createdDateTime:
+        type: string
+        format: date-time
+      incidentNumber:
+        type: string
+      modifiedDateTime:
+        type: string
+        format: date-time
+      plant:
+        type: string
+    title: IncidentNumber
+  LogNonConformanceFile:
+    type: object
+    required:
+    - fileContent
+    - fileMediaType
+    - fileName
+    properties:
+      fileContent:
+        type: string
+        description: The file content Base64-encoded.
+      fileMediaType:
+        type: string
+        description: The file media type, for example, 'text/xml'.
+      fileName:
+        type: string
+        description: The file name.
+    title: LogNonConformanceFile
+    description: The nonconformance file attachment.
+  LogNonConformanceRequest:
+    type: object
+    required:
+    - code
+    - plant
+    - sfcs
+    properties:
+      code:
+        type: string
+        description: The nonconformance code to log a nonconformance.
+        minLength: 1
+        maxLength: 16
+      dataFields:
+        type: array
+        description: The data field/value pairs associated with the nonconformance.
+        items:
+          $ref: '#/definitions/DataField'
+      files:
+        type: array
+        description: The collection of files to be stored with the nonconformance.
+        items:
+          $ref: '#/definitions/LogNonConformanceFile'
+      plant:
+        type: string
+        description: The plant to log a nonconformance.
+        minLength: 1
+        maxLength: 6
+      resource:
+        type: string
+        description: The resource to log a nonconformance.
+        minLength: 1
+        maxLength: 36
+      sfcs:
+        type: array
+        description: The SFC to log a nonconformance.
+        items:
+          type: string
+      processLotNumber:
+        type: string
+        description: The process lot to log nonconformance codes for the SFCs belonging to it.
+        minLength: 1
+        maxLength: 128
+      workCenter:
+        type: string
+        description: The work center to log a nonconformance.
+        minLength: 1
+        maxLength: 36
+      quantity:
+        type: number
+        description: The nonconformant SFC quantity.
+      primaryNonConformanceId:
+        type: string
+        description: The primary nonconformance record for logging a secondary nonconformance code.
+        minLength: 1
+        maxLength: 412
+      routingStepId:
+        type: string
+        description: The routing step on the relaxed routing where the nonconformance was logged.
+        minLength: 1
+        maxLength: 6
+    title: LogNonConformanceRequest
+    description: The request to log a nonconformance.
+  NonConformanceLogResponse:
+    type: object
+    properties:
+      ids:
+        type: array
+        description: The list of logged nonconformance incidents for SFCs.
+        items:
+          $ref: '#/definitions/SfcNonconformances'
+    title: NonConformanceLogResponse
+    description: The response for the logged nonconformances.
+  SfcNonconformances:
+    type: object
+    properties:
+      sfc:
+        type: string
+      ids:
+        type: array
+        description: The list of logged nonconformance incidents for the SFC.
+        items:
+          type: string
+    title: SfcNonconformances
+    description: The list of logged nonconformance incidents for the SFC.
+  CheckOpenNonConformancesRequest:
+    type: object
+    required:
+    - sfcs
+    - bomLevel
+    - plant
+    properties:
+      sfcs:
+        type: array
+        description: The SFC to check for open nonconformances.
+        items:
+          type: string
+      bomLevel:
+        type: integer
+        description: Bom level to search for open nonconformances.
+      plant:
+        type: string
+        description: The plant in which nonconformances are checked.
+    title: CheckOpenNonConformancesRequest
+    description: The request to check for open nonconformances.
+  OpenNonConformanceRequest:
+    type: object
+    required:
+    - id
+    - plant
+    properties:
+      id:
+        type: string
+        description: The incident ID reference for reopening a nonconformance incident.
+      plant:
+        type: string
+        description: The plant in which state is changed.
+    title: OpenNonConformanceRequest
+    description: The request to change state to open for nonconformance.
+  CloseNonConformanceRequest:
+    type: object
+    required:
+    - id
+    - plant
+    properties:
+      id:
+        type: string
+        description: The incident ID reference for closing a nonconformance incident.
+      plant:
+        type: string
+        description: The plant in which state is changed.
+    title: CloseNonConformanceRequest
+    description: The primary nonconformance record for logging a secondary nonconformance code.
+  Material:
+    type: object
+    properties:
+      material:
+        type: string
+      plant:
+        type: string
+      version:
+        type: string
+    title: Material
+  NonConformance:
+    type: object
+    properties:
+      category:
+        type: string
+      code:
+        $ref: '#/definitions/NonConformanceCode'
+      comments:
+        type: string
+      component:
+        $ref: '#/definitions/Material'
+      componentSfc:
+        $ref: '#/definitions/Material'
+        description: This field is not used and always empty.
+      createdDateTime:
+        type: string
+        format: date-time
+      date:
+        type: string
+        format: date-time
+      fileIds:
+        type: array
+        items:
+          type: string
+      incidentNumber:
+        $ref: '#/definitions/IncidentNumber'
+      material:
+        $ref: '#/definitions/Material'
+      modifiedDateTime:
+        type: string
+        format: date-time
+      operationActivity:
+        $ref: '#/definitions/OperationActivity'
+      plant:
+        type: string
+      quantity:
+        type: number
+      resource:
+        type: string
+      routing:
+        $ref: '#/definitions/Routing'
+      routingStepId:
+        type: string
+      sfc:
+        type: string
+      state:
+        type: string
+        enum:
+        - OPEN
+        - CLOSED
+        - CANCELLED
+        - CLOSE_PENDING
+      user:
+        type: string
+      workCenter:
+        type: string
+      dataFields:
+        type: array
+        description: The data field/value pairs associated with the nonconformance.
+        items:
+          $ref: '#/definitions/DataField'
+    title: NonConformance
+    description: NonConformance Incident.
+  NonConformanceCode:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+        - FAILURE
+        - DEFECT
+        - REPAIR
+      code:
+        type: string
+      codeDef:
+        $ref: '#/definitions/NonConformanceCodeDef'
+      createdDateTime:
+        type: string
+        format: date-time
+      customValues:
+        type: array
+        items:
+          $ref: '#/definitions/CustomValue'
+      description:
+        type: string
+      groups:
+        type: array
+        items:
+          $ref: '#/definitions/NonConformanceGroup'
+      modifiedDateTime:
+        type: string
+        format: date-time
+      plant:
+        type: string
+      status:
+        type: string
+        enum:
+        - ENABLED
+        - DISABLED
+    title: NonConformanceCode
+  NonConformanceCodeDef:
+    type: object
+    properties:
+      autoCloseIncident:
+        type: boolean
+      canBePrimaryCode:
+        type: boolean
+      createdDateTime:
+        type: string
+        format: date-time
+      dataType:
+        type: string
+      dispositionRoutings:
+        type: array
+        items:
+          $ref: '#/definitions/Routing'
+      modifiedDateTime:
+        type: string
+        format: date-time
+      secondaryCodes:
+        type: array
+        items:
+          $ref: '#/definitions/NonConformanceSecondaryCode'
+      severity:
+        type: string
+        enum:
+        - NONE
+        - LOW
+        - MEDIUM
+        - HIGH
+    title: NonConformanceCodeDef
+  NonConformanceGroup:
+    type: object
+    properties:
+      createdDateTime:
+        type: string
+        format: date-time
+      description:
+        type: string
+      group:
+        type: string
+      modifiedDateTime:
+        type: string
+        format: date-time
+      operationActivities:
+        type: array
+        items:
+          $ref: '#/definitions/OperationActivity'
+      plant:
+        type: string
+      validAtAllOperationActivities:
+        type: boolean
+    title: NonConformanceGroup
+  NonConformanceSecondaryCode:
+    type: object
+    properties:
+      code:
+        type: string
+      plant:
+        type: string
+      required:
+        type: boolean
+    title: NonConformanceSecondaryCode
+  OperationActivity:
+    type: object
+    properties:
+      operationActivity:
+        type: string
+      plant:
+        type: string
+      version:
+        type: string
+    title: OperationActivity
+  Routing:
+    type: object
+    properties:
+      plant:
+        type: string
+      routing:
+        type: string
+      routingType:
+        type: string
+      version:
+        type: string
+    title: Routing
+  SfcDisposition:
+    type: object
+    properties:
+      operation:
+        type: string
+        description: The operation activity at which the SFC was queued.
+      partialSfc:
+        type: boolean
+        description: Indicates whether the remaining quantity was only partially scrapped.
+      qty:
+        type: number
+        description: The quantity of the dispositioned SFC.
+      sfc:
+        type: string
+        description: The dispositioned SFC.
+      type:
+        type: string
+        description: 'The type of the SFC disposition: DONE - SFC completed all routing steps, NO_DISPOSITION - SFC remains at the current operation, PARTIAL_COMPLETE - Partial quantity of the SFC completes the current operation, QUEUE - SFC placed in queue at the current operation, RETURN - SFC returns to the selected operation, SCRAP - SFC is scrapped.'
+        enum:
+        - DONE
+        - NO_DISPOSITION
+        - PARTIAL_COMPLETE
+        - QUEUE
+        - RETURN
+        - SCRAP
+    title: SfcDisposition
+    description: The object describing a successful SFC disposition.
+  SfcDispositionRequest:
+    type: object
+    required:
+    - dateTime
+    - plant
+    - sfcs
+    properties:
+      dateTime:
+        type: string
+        description: The date and time for the SFC disposition.
+        example: '2021-02-11T16:07:35.256Z'
+      dispositionSelection:
+        $ref: '#/definitions/DispositionSelection'
+      plant:
+        type: string
+        description: The plant where the nonconformant SFCs are dispositioned.
+      resource:
+        type: string
+        description: The resource where the nonconformant SFCs are dispositioned.
+      sfcs:
+        type: array
+        description: The list of SFCs that are nonconformant and need dispositioning.
+        items:
+          type: string
+      workCenter:
+        type: string
+        description: The work center where the nonconformant SFCs are dispositioned.
+      performAutoSplit:
+        type: boolean
+        description: Indicates whether auto split must be performed when disposition is done for part of the SFC.
+    title: SfcDispositionRequest
+    description: The request for dispositioning nonconformant SFCs.
+  SfcDispositionResponse:
+    type: object
+    properties:
+      sfcDispositions:
+        type: array
+        description: The list of successful SFC dispositions.
+        items:
+          $ref: '#/definitions/SfcDisposition'
+    title: SfcDispositionResponse
+    description: The object describing successful SFC dispositions.
+  DispositionOption:
+    type: object
+    properties:
+      description:
+        type: string
+        description: The description of an SFC disposition.
+      operation:
+        type: string
+        description: The operation activity of the return step where nonconformant SFCs can be dispositioned.
+      operationVersion:
+        type: string
+        description: The version of the operation activity of the return step where nonconformant SFCs can be dispositioned.
+      routing:
+        type: string
+        description: The routing where nonconformant SFCs can be dispositioned.
+      routingType:
+        type: string
+        description: The type of the routing where nonconformant SFCs can be dispositioned.
+      routingVersion:
+        type: string
+        description: The version of the routing where nonconformant SFCs can be dispositioned.
+      stepId:
+        type: string
+        description: The ID of the return step where nonconformant SFCs can be dispositioned.
+    title: DispositionOption
+    description: The SFC disposition option.
+  DispositionOptions:
+    type: object
+    properties:
+      options:
+        type: array
+        description: The list of SFC disposition options.
+        items:
+          $ref: '#/definitions/DispositionOption'
+      type:
+        type: string
+        description: 'The type of the SFC disposition: GROUP_MEMBER - Member of disposition group, ROUTING - Routing where an SFC could be dispositioned, ROUTING_STEP - Routing Step where an SFC could be placed, NEXT_STEP - possible next steps for an SFC, RETURN_STEP - possible return steps for an SFC, FUTURE_STEP - possible future steps an for SFC, SCRAP - SFC scrap.'
+        enum:
+        - GROUP_MEMBER
+        - ROUTING
+        - ROUTING_STEP
+        - NEXT_STEP
+        - RETURN_STEP
+        - FUTURE_STEP
+        - SCRAP
+    title: DispositionOptions
+    description: SFC disposition options.
+  DispositionSelection:
+    type: object
+    properties:
+      returnStepId:
+        type: string
+        description: The ID of the return step where nonconformant SFCs must be dispositioned.
+      routing:
+        type: string
+        description: The routing where nonconformant SFCs must be dispositioned.
+      routingType:
+        type: string
+        description: The type of the routing where nonconformant SFCs must be dispositioned.
+      routingVersion:
+        type: string
+        description: The version of the routing where nonconformant SFCs must be dispositioned.
+    title: DispositionSelection
+    description: The object describing the kind of SFC disposition that was selected.
+  DispositionSelectionResponse:
+    type: object
+    properties:
+      causeMessage:
+        type: string
+        description: Contains a technical reason for the error.
+      code:
+        type: string
+        description: Internal error message
+      correlationId:
+        type: string
+        description: Contains correlationId for the error.
+      dispositionOptions:
+        description: SFC disposition options.
+        $ref: '#/definitions/DispositionOptions'
+      message:
+        type: string
+        description: Contains additional information, if any
+    title: DispositionSelectionResponse
+    description: The response containing SFC disposition options.
+  error:
+    type: object
+    properties:
+      causeMessage:
+        type: string
+        description: Contains technical reason for the error.
+      code:
+        type: string
+        description: Internal error message
+      correlationId:
+        type: string
+        description: Contains correlationId for the error.
+      message:
+        type: string
+        description: Contains additional information, if any
+    title: error
+    description: Error response.
+externalDocs:
+  description: Prepare for API Integration
+  url: https://help.sap.com/docs/sap-digital-manufacturing/operations-guide/prepare-for-api-integration
+schemes:
+- https
+x-sap-shortText: Manage nonconformances as part of quality checks
+x-servers:
+- url: https://api.{regionHost}/nonconformance/v1
+  description: Base URL
+  templates:
+    regionHost:
+      description: The data center where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.dmc.cloud.sap
+      - eu20.dmc.cloud.sap
+      - us10.dmc.cloud.sap
+      - us20.dmc.cloud.sap
+      - test.eu10.dmc.cloud.sap
+      - test.eu20.dmc.cloud.sap
+      - test.us10.dmc.cloud.sap
+      - test.us20.dmc.cloud.sap
+      default: test.eu10.dmc.cloud.sap
+    tokenHost:
+      description: The authentication server where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.hana.ondemand.com
+      - eu20.hana.ondemand.com
+      - us10.hana.ondemand.com
+      - us20.hana.ondemand.com
+      default: eu10.hana.ondemand.com

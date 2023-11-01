@@ -1,0 +1,1530 @@
+openapi: 3.0.1
+info:
+  title: Time Tracking
+  description: Improve transparency on your shop floor by recording attendance and tracking labor. Use the time tracking service to manage time tracking records and accurately record attendance, direct and indirect labor.
+  version: v1
+  contact:
+    name: SAP Digital Manufacturing Operations
+    email: sap-dmoperation@sap.com
+servers:
+- url: https://api.{regionHost}/timetracking
+  description: Base URL
+  variables:
+    regionHost:
+      description: The data center where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.dmc.cloud.sap
+      - eu20.dmc.cloud.sap
+      - us10.dmc.cloud.sap
+      - us20.dmc.cloud.sap
+      - test.eu10.dmc.cloud.sap
+      - test.eu20.dmc.cloud.sap
+      - test.us10.dmc.cloud.sap
+      - test.us20.dmc.cloud.sap
+      default: test.eu10.dmc.cloud.sap
+    tokenHost:
+      description: The authentication server where SAP Digital Manufacturing is provisioned for your organization
+      enum:
+      - eu10.hana.ondemand.com
+      - eu20.hana.ondemand.com
+      - us10.hana.ondemand.com
+      - us20.hana.ondemand.com
+      default: eu10.hana.ondemand.com
+tags:
+- name: Attendance
+- name: Direct Labor
+- name: Indirect Labor
+- name: Time Records
+paths:
+  /v1/attendance/start:
+    post:
+      tags:
+      - Attendance
+      summary: Create start event for attendance.
+      description: Create a start event for attendance to clock in a user.
+      operationId: attendanceStart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/attendance/stop:
+    post:
+      tags:
+      - Attendance
+      summary: Create a stop event for attendance.
+      description: Create a stop event for attendance to clock out a user.
+      operationId: attendanceStop
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/attendance:
+    post:
+      tags:
+      - Attendance
+      summary: Create a time record for attendance.
+      description: Create a time record for a user to record attendance.
+      operationId: attendanceCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/attendance/{id}:
+    patch:
+      tags:
+      - Attendance
+      summary: Update a time record for attendance.
+      description: Update a defined attendance time record for a user.
+      operationId: attendanceEdit
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttendanceEditRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/direct-labor/start:
+    post:
+      tags:
+      - Direct Labor
+      summary: Create start event for direct labor.
+      description: Create a start event to start labor tracking for a user working on an SFC.
+      operationId: directLaborStart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectLaborApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/direct-labor/stop:
+    post:
+      tags:
+      - Direct Labor
+      summary: Create stop event for direct labor.
+      description: Create a stop event to stop labor tracking for a user working on an SFC.
+      operationId: directLaborStop
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectLaborApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/direct-labor:
+    post:
+      tags:
+      - Direct Labor
+      summary: Create a time record for direct labor.
+      description: Create a time record to track direct labor for a user working on an SFC.
+      operationId: directLaborCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectLaborCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/direct-labor/{id}:
+    patch:
+      tags:
+      - Direct Labor
+      summary: Update a time record for direct labor.
+      description: Update a defined direct labor time record for a user.
+      operationId: directLaborEdit
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectLaborEditRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/indirect-labor/start:
+    post:
+      tags:
+      - Indirect Labor
+      summary: Create a start event for indirect labor.
+      description: Create an indirect labor event to start tracking an indirect labor activity for users on the shop floor.
+      operationId: indirectLaborStart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndirectLaborApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/indirect-labor/stop:
+    post:
+      tags:
+      - Indirect Labor
+      summary: Create stop event for indirect labor.
+      description: Create an indirect labor event to stop tracking an indirect labor activity for users on the shop floor.
+      operationId: indirectLaborStop
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndirectLaborApiRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/indirect-labor:
+    post:
+      tags:
+      - Indirect Labor
+      summary: Create a time record for indirect labor.
+      description: Create a time record to track indirect labor for a user.
+      operationId: indirectLaborCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndirectLaborCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Resource is created successfully.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/indirect-labor/{id}:
+    patch:
+      tags:
+      - Indirect Labor
+      summary: Update a time record for indirect labor.
+      description: Update a defined indirect labor time record for a user.
+      operationId: indirectLaborEdit
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndirectLaborEditRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/time-records:
+    get:
+      tags:
+      - Time Records
+      summary: Find all time records
+      description: 'Find all time records using various filter parameters. (Note: By default the service doesn''t return any deleted time records. However, you can use the ''status'' parameter to retrieve deleted records.)'
+      operationId: findAllTimeRecords
+      parameters:
+      - name: plant
+        in: query
+        description: The name of the plant
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: The activity type of the time record
+        required: false
+        schema:
+          type: string
+          enum:
+          - ATTENDANCE
+          - DIRECT_LABOR
+      - name: userId
+        in: query
+        description: The ID of the user
+        required: false
+        schema:
+          type: string
+      - name: start
+        in: query
+        description: The start date and time of the event
+        required: false
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:07Z'
+      - name: end
+        in: query
+        description: The end date and time of the event
+        required: false
+        schema:
+          type: string
+          format: date-time
+          example: '2023-01-01T00:00:07Z'
+      - name: resource
+        in: query
+        description: The name of the resource
+        required: false
+        schema:
+          type: string
+      - name: workCenter
+        in: query
+        description: The name of the work center
+        required: false
+        schema:
+          type: string
+      - name: operation
+        in: query
+        description: The name of the operation activity
+        required: false
+        schema:
+          type: string
+      - name: operationVersion
+        in: query
+        description: The version of the operation activity
+        required: false
+        schema:
+          type: string
+      - name: stepId
+        in: query
+        description: The ID of the routing step
+        required: false
+        schema:
+          type: string
+      - name: shopOrder
+        in: query
+        description: The number of the order
+        required: false
+        schema:
+          type: string
+      - name: sfc
+        in: query
+        description: The number of the SFC
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: The status of the time record
+        required: false
+        schema:
+          type: string
+          enum:
+          - NEW
+          - CHANGED
+          - DELETED
+          - APPROVED
+      - name: routing
+        in: query
+        description: The name of the routing
+        required: false
+        schema:
+          type: string
+      - name: routingVersion
+        in: query
+        description: The version of the routing
+        required: false
+        schema:
+          type: string
+      - name: routingType
+        in: query
+        description: The type of the routing
+        required: false
+        schema:
+          type: string
+          enum:
+          - PRODUCTION
+          - NC
+          - SPECIAL
+          - DISPOSITION_FUNCTION
+          - SFC_SPECIFIC
+          - SHOPORDER_SPECIFIC
+          - CONFIGURABLE
+          - PRODUCTION_RECIPE
+          - SHOPORDER_SPECIFIC_RECIPE
+      - name: standardValue
+        in: query
+        description: 'The standard value against which labor is tracked. (Note: This parameter is ignored if ''activity'' parameter is provided.)'
+        required: false
+        schema:
+          type: string
+      - name: activity
+        in: query
+        description: The activity against which labor is tracked
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Zero-based page index (0..N)
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      - name: size
+        in: query
+        description: The size of the page to be returned
+        required: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 20
+      - name: sort
+        in: query
+        description: 'Sorting criteria in the format: property,(asc|desc). The default sort order is ascending. Multiple sort criteria are supported.'
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/time-records/{id}:
+    get:
+      tags:
+      - Time Records
+      summary: Find a time record
+      description: Find a time record by providing its ID.
+      operationId: findById
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApiResponse'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+    delete:
+      tags:
+      - Time Records
+      summary: Delete a time record.
+      description: Delete a defined time record for a user.
+      operationId: timeRecordDelete
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      - name: note
+        in: query
+        description: A short note or comment about the deletion of time record
+        required: false
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Resource is deleted successfully.
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/time-records/approve:
+    post:
+      tags:
+      - Time Records
+      summary: Approve time records.
+      description: Approve a batch of time records.
+      operationId: approve
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+        required: true
+        description: List of time record IDs
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeRecordApprovalStatus'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+  /v1/time-records/approve/{id}:
+    post:
+      tags:
+      - Time Records
+      summary: Approve a time record.
+      description: Approve a defined time record for a user.
+      operationId: approveById
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the time record
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful Operation.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/TimeRecordApprovalStatus'
+        '400':
+          description: The HTTP request is bad or invalid and cannot be processed by the server.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '401':
+          description: You are not authorized to call this resource.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '403':
+          description: Accessing the resource you are trying to reach is forbidden.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '404':
+          description: Resource is not found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+        '500':
+          description: An internal error occurred.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PublicApiErrorResponse'
+components:
+  schemas:
+    PublicApiErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Contains error message and additional information, if any
+        code:
+          type: string
+          description: Internal error code
+        causeMessage:
+          type: string
+          description: Contains technical reason for the error
+        correlationId:
+          type: string
+          description: Contains a correlation ID for the error
+    DirectLaborApiRequest:
+      required:
+      - operation
+      - plant
+      - resource
+      - routing
+      - routingType
+      - routingVersion
+      - sfc
+      - shopOrder
+      - stepId
+      - userId
+      - workCenter
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user tracking labor
+        plant:
+          type: string
+          description: The plant of the user tracking labor
+        resource:
+          type: string
+          description: The name of the resource
+        workCenter:
+          type: string
+          description: The name of the work center
+        operation:
+          type: string
+          description: The name of the operation activity
+        operationVersion:
+          type: string
+          description: The version of the operation activity
+        stepId:
+          type: string
+          description: The ID of the routing step
+        shopOrder:
+          type: string
+          description: The number of the order
+        sfc:
+          type: string
+          description: The number of the SFC
+        routing:
+          type: string
+          description: The name of the routing
+        routingVersion:
+          type: string
+          description: The version of the routing
+        routingType:
+          type: string
+          description: The type of the routing
+          enum:
+          - PRODUCTION
+          - NC
+          - SPECIAL
+          - DISPOSITION_FUNCTION
+          - SFC_SPECIFIC
+          - SHOPORDER_SPECIFIC
+          - CONFIGURABLE
+          - PRODUCTION_RECIPE
+          - SHOPORDER_SPECIFIC_RECIPE
+        standardValue:
+          type: string
+          description: The standard value against which labor is tracked
+        time:
+          type: string
+          description: The date and time of the event
+          format: date-time
+        numberOfOperators:
+          type: integer
+          description: The total number of users tracking labor
+          format: int32
+          default: 1
+      description: Direct labor request
+    DirectLaborCreateRequest:
+      required:
+      - operation
+      - plant
+      - resource
+      - routing
+      - routingType
+      - routingVersion
+      - sfc
+      - shopOrder
+      - startTime
+      - stepId
+      - userId
+      - workCenter
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user tracking labor
+        plant:
+          type: string
+          description: The plant of the user tracking labor
+        resource:
+          type: string
+          description: The name of the resource
+        workCenter:
+          type: string
+          description: The name of the work center
+        operation:
+          type: string
+          description: The name of the operation activity
+        operationVersion:
+          type: string
+          description: The version of the operation activity
+        stepId:
+          type: string
+          description: The ID of the routing step
+        shopOrder:
+          type: string
+          description: The number of the order
+        sfc:
+          type: string
+          description: The number of the SFC
+        routing:
+          type: string
+          description: The name of the routing
+        routingVersion:
+          type: string
+          description: The version of the routing
+        routingType:
+          type: string
+          description: The type of the routing
+          enum:
+          - PRODUCTION
+          - NC
+          - SPECIAL
+          - DISPOSITION_FUNCTION
+          - SFC_SPECIFIC
+          - SHOPORDER_SPECIFIC
+          - CONFIGURABLE
+          - PRODUCTION_RECIPE
+          - SHOPORDER_SPECIFIC_RECIPE
+        standardValue:
+          type: string
+          description: The standard value against which labor is tracked
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        adjustedLaborTime:
+          type: string
+          description: The changed duration of the labor time as entered by a production supervisor. Please follow the time designator as per https://en.wikipedia.org/wiki/ISO_8601#Durations
+          example: For example provide a string as PT1H33M15S for a duration of 1 Hour and 33 minutes and 15 seconds
+        note:
+          type: string
+          description: A short note or comment about the creation of event
+        numberOfOperators:
+          type: integer
+          description: The total number of users tracking labor
+          format: int32
+          default: 1
+      description: Direct labor create request
+    DirectLaborEditRequest:
+      required:
+      - startTime
+      type: object
+      properties:
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        adjustedLaborTime:
+          type: string
+          description: The changed duration of the labor time as entered by a production supervisor. Please follow the time designator as per https://en.wikipedia.org/wiki/ISO_8601#Durations
+          example: For example provide a string as PT1H33M15S for a duration of 1 Hour and 33 minutes and 15 seconds
+        note:
+          type: string
+          description: A short note or comment about updating the event
+      description: Direct labor edit request
+    AttendanceApiRequest:
+      required:
+      - plant
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user recording attendance
+        plant:
+          type: string
+          description: The plant of the user recording attendance
+        time:
+          type: string
+          description: The date and time of the event
+          format: date-time
+      description: Attendance request
+    AttendanceCreateRequest:
+      required:
+      - plant
+      - startTime
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user recording attendance
+        plant:
+          type: string
+          description: The plant of the user recording attendance
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        note:
+          type: string
+          description: A short note or comment about the creation of event
+      description: Attendance create request
+    AttendanceEditRequest:
+      required:
+      - startTime
+      type: object
+      properties:
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        note:
+          type: string
+          description: A short note or comment about updating the event
+      description: Attendance edit request
+    IndirectLaborApiRequest:
+      required:
+      - plant
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user tracking labor
+        plant:
+          type: string
+          description: The plant of the user
+        time:
+          type: string
+          description: The date and time of the event
+          format: date-time
+        activity:
+          type: string
+          description: The indirect labor activity
+      description: Indirect Labor Request
+    IndirectLaborCreateRequest:
+      required:
+      - activity
+      - plant
+      - startTime
+      - userId
+      type: object
+      properties:
+        userId:
+          type: string
+          description: The ID of the user tracking indirect labor
+        plant:
+          type: string
+          description: The plant of the user
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        activity:
+          type: string
+          description: The indirect labor activity
+        adjustedLaborTime:
+          type: string
+          description: The changed duration of the labor time as entered by a production supervisor. Please follow the time designator as per https://en.wikipedia.org/wiki/ISO_8601#Durations
+          example: For example provide a string as PT1H33M15S for a duration of 1 Hour and 33 minutes and 15 seconds
+        note:
+          type: string
+          description: A short note or comment about the creation of event
+      description: Indirect labor create request
+    IndirectLaborEditRequest:
+      required:
+      - activity
+      - startTime
+      type: object
+      properties:
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        activity:
+          type: string
+          description: The indirect labor activity
+        adjustedLaborTime:
+          type: string
+          description: The adjusted labor time that replaces the recorded duration. Please follow the time designator as per https://en.wikipedia.org/wiki/ISO_8601#Durations
+          example: For example provide a string as PT1H33M15S for a duration of 1 Hour and 33 minutes and 15 seconds
+        note:
+          type: string
+          description: A short note or comment about updating the event
+    TimeRecordApiResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the time record
+        type:
+          type: string
+          description: The activity type of the time record
+          enum:
+          - ATTENDANCE
+          - DIRECT_LABOR
+        userId:
+          type: string
+          description: The ID of the user
+        plant:
+          type: string
+          description: The name of the plant
+        startTime:
+          type: string
+          description: The start date and time of the event
+          format: date-time
+        endTime:
+          type: string
+          description: The end date and time of the event
+          format: date-time
+        resource:
+          type: string
+          description: The name of the resource
+        workCenter:
+          type: string
+          description: The name of the work center
+        operation:
+          type: string
+          description: The name of the operation activity
+        operationVersion:
+          type: string
+          description: The version of the operation activity
+        stepId:
+          type: string
+          description: The ID of the routing step
+        shopOrder:
+          type: string
+          description: The number of the order
+        sfc:
+          type: string
+          description: The number of the SFC
+        status:
+          type: string
+          description: The status of the time record
+          enum:
+          - NEW
+          - CHANGED
+          - DELETED
+          - APPROVED
+        routing:
+          type: string
+          description: The name of the routing
+        routingVersion:
+          type: string
+          description: The version of the routing
+        routingType:
+          type: string
+          description: The type of the routing
+          enum:
+          - PRODUCTION
+          - NC
+          - SPECIAL
+          - DISPOSITION_FUNCTION
+          - SFC_SPECIFIC
+          - SHOPORDER_SPECIFIC
+          - CONFIGURABLE
+          - PRODUCTION_RECIPE
+          - SHOPORDER_SPECIFIC_RECIPE
+        standardValue:
+          type: string
+          description: The standard value against which labor is tracked
+        activity:
+          type: string
+          description: The activity against which labor is tracked
+        effectiveLaborTime:
+          type: string
+          description: The duration of the effective labor time in ISO 8601 format
+        adjustedLaborTime:
+          type: string
+          description: The changed duration of the labor time in ISO 8601 format as entered by a production supervisor
+        duration:
+          type: string
+          description: The duration of the time record in ISO 8601 format
+        numberOfOperators:
+          type: integer
+          description: The total number of users tracking labor
+          format: int32
+          default: 1
+      description: Time record response
+    TimeRecordApprovalStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the time record
+        status:
+          type: string
+          description: The approval status of the time record
+        statusCode:
+          type: string
+          description: The approval status code of the time record
+        errorCode:
+          type: string
+          description: The internal error code
+        error:
+          type: string
+          description: The error message and additional information, if any
+      description: Status of time record approval
+  securitySchemes:
+    OauthClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://{subdomain}.authentication.{tokenHost}/oauth/token
+          scopes: {}
+security:
+- OauthClientCredentials: []
+externalDocs:
+  description: Prepare for API Integration
+  url: https://help.sap.com/docs/SAP_DIGITAL_MANUFACTURING/34f67db3b755405e8145c578221f012c/29d18581dab1438c92a79f28adcc8142.html
+x-sap-shortText: Manage time tracking records and events for activities on the shop floor.
