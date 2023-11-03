@@ -3,6 +3,8 @@ import {sfcInfoDto} from "../../dto/sfcInfo/sfcInfoDto";
 import {ApiResponse} from "../../dto/ApiResponse";
 import { FindOrderResponse } from '../../../apisdk/sapdme_order';
 import {SfcDetailResponse} from "../../../apisdk/sapdme_sfc";
+import {db} from '../../../db';
+import { ISfcAssy } from "../../../db/models";
 
 export abstract class sfcInfo{
     static  async getBOMInfoBySfc(plant: string , sfc: string): Promise<ApiResponse>{
@@ -24,6 +26,23 @@ export abstract class sfcInfo{
 
 
           //  apiResp.data = sfcResp;
+        }
+        catch (e: any){
+            apiResp.data = e.toString();
+            apiResp.message = "Error";
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
+
+    static  async getUser(): Promise<ApiResponse>{
+        let apiResp = new ApiResponse();
+        let apiResq = new ApiResponse();
+        try{
+           // let a : ISfcAssy =await db.sfcAssy.add("sfcBo", "shopOrderBo", "resourceBo", "operationBo", "prodMaterialBo", 2, "material", "userId");
+             // @ts-ignore
+            let a : ISfcAssy =await db.sfcAssy.all();
+            console.log(a);
         }
         catch (e: any){
             apiResp.data = e.toString();

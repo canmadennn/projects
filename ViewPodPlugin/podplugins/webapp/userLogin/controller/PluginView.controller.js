@@ -51,6 +51,15 @@ sap.ui.define([
           //  const sfc = this.getPodSelectionModel().getSelection().shopOrder.shopOrder;
             var userID=this.getView().byId("userNameInput").getValue();
             console.log(plant+"       "+userID+"     "+"ekle")
+
+            const params = {
+
+            };
+            apiGET("getData",params,this.setProp.bind(this));
+        },
+
+        setProp:function (data) {
+            console.log(data)
         },
 
 

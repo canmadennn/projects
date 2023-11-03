@@ -1,0 +1,11 @@
+---
+applications:
+- name: NN_Project
+  path: .
+  default-route: true
+  buildpack: nodejs_buildpack
+  memory: 128M
+  services:
+  - dest_MdnPodPlugin
+  - connectivity-cf
+  - postgresql-cf
