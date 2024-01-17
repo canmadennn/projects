@@ -13,7 +13,7 @@ sap.ui.define([
             }
         },
 
-        onAfterRendering(){onPress();},
+        onAfterRendering(){},
         onInit: function() {
 
             if (PluginViewController.prototype.onInit) {

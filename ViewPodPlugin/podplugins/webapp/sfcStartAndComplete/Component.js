@@ -47,14 +47,15 @@ sap.ui.define([
                 return false;
             }
             // Get operation from POD Selection Model
-            var aOperations = oPodSelectionModel.getOperations();
+          //  var aOperations = oPodSelectionModel.getOperations();
+            var aOperations = oPodSelectionModel.getSelections()[0].sfcData.operation
             if (!aOperations || aOperations.length === 0) {
                 sMessage = this.getI18nText("missingOperation");
                 this.showErrorMessage(sMessage, true, true);
                 return false;
             }
             // show success message as toast and in POD Message Popover
-            var sMessage = this.getI18nText("executionPluginStartedExecution", ["exampleExecutionPlugin", aOperations[0].operation]);
+            var sMessage = this.getI18nText("executionPluginStartedExecution", ["exampleExecutionPlugin", aOperations]);
             this.addMessage(MessageType.Success, sMessage, "", "");
             this.showMessageToast(sMessage);
 
@@ -101,12 +102,12 @@ sap.ui.define([
                         bExecute = true;
                         break;
                     case 'Operation is':
-                        if (aOperations[0].operation === that.sOperation) {
+                        if (aOperations === that.sOperation) {
                             bExecute = true;
                         }
                         break;
                     case 'Operation is one of':
-                        if (that.sOperation && that.sOperation.indexOf(aOperations[0].operation) > -1) {
+                        if (that.sOperation && that.sOperation.indexOf(aOperations) > -1) {
                             bExecute = true;
                         }
                         break;

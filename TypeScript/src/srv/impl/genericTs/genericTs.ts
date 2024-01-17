@@ -8,7 +8,7 @@ import {ISfcAssy, Itest} from "../../../db/models";
 import xsenv from "@sap/xsenv";
 import * as hanaClient from '@sap/hana-client';
 
-export abstract class sfcInfo{
+export abstract class genericTs{
     static  async getBOMInfoBySfc(plant: string , sfc: string): Promise<ApiResponse>{
         let apiResp = new ApiResponse();
         let apiResq = new ApiResponse();
@@ -19,7 +19,7 @@ export abstract class sfcInfo{
             // @ts-ignore
             let orderResp: FindOrderResponse = (await OrderApi.getOrders(plant, sfc)).data;
             // @ts-ignore
-           // let sfcResp: SfcDetailResponse = (await OrderApi.getSfcDetails(plant, orderResp.sfcs[0])).data;
+            // let sfcResp: SfcDetailResponse = (await OrderApi.getSfcDetails(plant, orderResp.sfcs[0])).data;
 
 
             apiResp=await OrderApi.getSfcDetails(plant, orderResp.sfcs[0]);
@@ -27,7 +27,7 @@ export abstract class sfcInfo{
 
 
 
-          //  apiResp.data = sfcResp;
+            //  apiResp.data = sfcResp;
         }
         catch (e: any){
             apiResp.data = e.toString();
@@ -58,7 +58,13 @@ export abstract class sfcInfo{
         let apiResp = new ApiResponse();
 
         try{
-            db.userOperations.createUserTable();
+            // Dizi oluşturma
+
+            let clm: string[] = ['apple', 'banana', 'orange'];
+            let type: string[] = ['NCHAR(412)', 'NCHAR(412)', 'NCHAR(412)'];
+
+
+                db.genericSql.createGenericTable(clm,type);
             apiResp.message = "SCC";
             apiResp.data ="kayit basarili"
             apiResp.status = 200;

@@ -3,6 +3,9 @@ import {sfcInfo} from "./srv/impl/sfcInfo/sfcInfo";
 import {ApiResponse} from "./srv/dto/ApiResponse";
 import dotenv from 'dotenv';
 import {db} from './db';
+import {Itest} from "./db/models";
+import {genericTs} from "./srv/impl/genericTs/genericTs";
+
 
 dotenv.config();
 const app: Express = express();
@@ -30,37 +33,27 @@ app.get('/getBomBySfc', (req: Request, res: Response, next :NextFunction) => {
     }).catch(err => next(err));
 });
 
-app.get('/createTables',(req:Request, res:Response)=>{
+app.get('/createTable',(req:Request, res:Response)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
         "OPTIONS, GET, POST, PUT, PATCH, DELETE"
     );
-    db.sfcAssy.create();
+   let x= sfcInfo.getUser();
     res.json({
-        message:"success"
+        message:x
     });
 });
 
-app.get('/add',(req:Request,res:Response,next:NextFunction)=>{
+app.get('/createGenericTable',(req:Request,res:Response,next:NextFunction)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
         "OPTIONS, GET, POST, PUT, PATCH, DELETE"
     );
+     //db.genericSql.createGenericTable("test1","test22","test4","ra");
 
-
-    res.json({
-        message:"success"
-    });
-});
-app.get('/getData',(req:Request,res:Response,next:NextFunction)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-    sfcInfo.getUser().then((v: ApiResponse)=>{
+    genericTs.dinamikTable().then((v: ApiResponse)=>{
         if(v.status !== 200 && v.status !== 201) {
             if (typeof v.status === "number") {
                 res.status(v.status);
@@ -71,6 +64,31 @@ app.get('/getData',(req:Request,res:Response,next:NextFunction)=>{
         else
             res.json(v);
     }).catch(err => next(err));
+
+
+});
+
+
+
+app.get('/getData',(req:Request, res:Response, next: NextFunction)=>{
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader('Access-Control-Allow-Headers','Content-Type');
+    sfcInfo.getUser();
+
+
+/*
+    db.test.selectTest().then((v)=>{
+        let x =v;
+        res.json(v);
+    }).catch(err=>{
+        console.log(err);
+        next(err);
+    });
+*/
 });
 
 app.listen(port, () => {

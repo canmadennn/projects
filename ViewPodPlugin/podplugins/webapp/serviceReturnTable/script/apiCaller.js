@@ -1,4 +1,5 @@
 jQuery.sap.require("sap.m.MessageBox");
+
 const API_URL = "https://demobackendservices.cfapps.us10-001.hana.ondemand.com/";
 function apiGET (service , param,  afterMethod) {
     const searchParams = Object.entries(param).map(([key, val]) => `${key}=${val}`).join('&');

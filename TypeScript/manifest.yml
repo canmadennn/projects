@@ -9,3 +9,4 @@ applications:
   - dest_MdnPodPlugin
   - connectivity-cf
   - postgresql-cf
+  - hanasql

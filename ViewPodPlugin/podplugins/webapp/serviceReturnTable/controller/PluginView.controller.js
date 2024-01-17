@@ -15,7 +15,7 @@ sap.ui.define([
             }
         },
 
-        onAfterRendering(){onPress();},
+        onAfterRendering(){},
         onInit: function() {
 
             if (PluginViewController.prototype.onInit) {
@@ -54,10 +54,15 @@ sap.ui.define([
                 plant: plant,
                 sfc: sfc
             };
-            apiGET("getBomBySfc",params,this.setProp.bind(this));
+            /*         apiGET("getBomBySfc",params,this.setProp.bind(this));
+          */
+
+            apiGET("getData",params,this.setPropx.bind(this));
 
         },
-
+        setPropx:function (data){
+           console.log(data);
+        },
 
 
         setProp:function (data){
