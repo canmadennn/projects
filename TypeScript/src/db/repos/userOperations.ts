@@ -1,6 +1,6 @@
 import {IDatabase, IMain} from 'pg-promise';
 import {IResult} from 'pg-promise/typescript/pg-subset';
-import {ISfcAssy, IuserOperations} from '../models';
+import {ISfcAssy, IuserOperations,IgenericTables} from '../models';
 import {userOperations as sql} from '../sql';
 
 /*

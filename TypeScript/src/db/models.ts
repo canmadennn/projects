@@ -32,3 +32,7 @@ export interface IuserOperations{
     SURNAME:string;
     CARD_NUMBER:string
 }
+
+export interface IgenericTables{
+    table_name:string
+}

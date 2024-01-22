@@ -51,18 +51,28 @@ sap.ui.define([
             const plant = sap.dm.dme.util.PlantSettings.getCurrentPlant();
             const sfc = this.getPodSelectionModel().getSelection().shopOrder.shopOrder;
             const params = {
-                plant: plant,
-                sfc: sfc
-            };
+                "clm":["test1","test2"],
+                "tableName":"tableName",
+                "type":["NCHAR(412)","NCHAR(412)","NCHAR(412)"]
+            }
+
             /*         apiGET("getBomBySfc",params,this.setProp.bind(this));
           */
 
-            apiGET("getData",params,this.setPropx.bind(this));
+            //apiGET("ornekEndpoint",params,this.setPropx.bind(this));
+
+            //apiPOST("ornekEndpoint",params,this.setPropx.bind(this))
+            //apiPostAjax("ornekEndpoint",params);
+          //  this.postTest(params);
+            apiPostAjax("createGenericTable",params);
 
         },
         setPropx:function (data){
-           console.log(data);
+            console.log(data);
         },
+
+
+
 
 
         setProp:function (data){

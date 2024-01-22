@@ -1,5 +1,6 @@
 import {IDatabase, IMain} from 'pg-promise';
 import {IResult} from 'pg-promise/typescript/pg-subset';
+import {IgenericTables} from '../models';
 import {genericSql as sql} from '../sql';
 
 /*
@@ -29,9 +30,12 @@ export class GenericSqlRepository {
 
 
 
-    createGenericTable(value1:any[],value2:any[]): Promise<null> {
-        return this.db.none(sql.create,[value1,value2]);
+    createGenericTable(tableColumns:any[],tableColumnsType:any[],tableName:string): Promise<null> {
+        return this.db.none(sql.createTable,[tableColumns,tableColumnsType,tableName]);
         //return this.db.result('select * from test');
+    }
+    selectAllTable(): Promise<IgenericTables[] | null> {
+        return this.db.any(sql.selectAllTable);
     }
 
 

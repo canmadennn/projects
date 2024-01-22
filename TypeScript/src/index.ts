@@ -1,10 +1,13 @@
-import express, {Express, NextFunction, Request, Response} from 'express';
+import express, {Express, NextFunction, Request, Response,Application} from 'express';
+import cors, { CorsOptions } from 'cors';
+
 import {sfcInfo} from "./srv/impl/sfcInfo/sfcInfo";
 import {ApiResponse} from "./srv/dto/ApiResponse";
 import dotenv from 'dotenv';
 import {db} from './db';
-import {Itest} from "./db/models";
+import {IgenericTables, Itest} from "./db/models";
 import {genericTs} from "./srv/impl/genericTs/genericTs";
+
 
 
 dotenv.config();
@@ -12,6 +15,12 @@ const app: Express = express();
 const port = process.env.PORT;
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+const corsOptions: CorsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
+app.use(cors(corsOptions));
 app.get('/getBomBySfc', (req: Request, res: Response, next :NextFunction) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -45,15 +54,47 @@ app.get('/createTable',(req:Request, res:Response)=>{
     });
 });
 
-app.get('/createGenericTable',(req:Request,res:Response,next:NextFunction)=>{
+app.post('/ornekEndpoint', (req, res) => {
+    const requestData = req.body;
+    const response = {
+        status: 200,
+        message: 'Success',
+        data: requestData
+    };
+    res.json(response);
+});
+
+
+app.post('/createGenericTable', (req, res,next:NextFunction) => {
+    const requestData = req.body;
+    requestData.clm;
+    requestData.type;
+    requestData.tableName;
+     let clm:string[]=["test1","test2"];
+     let type:string[]=["NCHAR(412)","NCHAR(412","NCHAR(412"]
+    genericTs.dynamicTableCreate(requestData.clm,requestData.type,requestData.tableName).then((v: ApiResponse)=>{
+        if(v.status !== 200 && v.status !== 201) {
+            if (typeof v.status === "number") {
+                res.status(v.status);
+            }
+            else res.status(500);
+            res.json(v);
+        }
+        else
+            res.json(v);
+    }).catch(err => next(err));
+
+});
+
+/*app.get('/createGenericTable',(req:Request,res:Response,next:NextFunction)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
         "OPTIONS, GET, POST, PUT, PATCH, DELETE"
     );
-     //db.genericSql.createGenericTable("test1","test22","test4","ra");
 
-    genericTs.dinamikTable().then((v: ApiResponse)=>{
+
+    genericTs.dynamicTableCreate().then((v: ApiResponse)=>{
         if(v.status !== 200 && v.status !== 201) {
             if (typeof v.status === "number") {
                 res.status(v.status);
@@ -67,8 +108,32 @@ app.get('/createGenericTable',(req:Request,res:Response,next:NextFunction)=>{
 
 
 });
+*/
+
+app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+    );
+    res.setHeader('Access-Control-Allow-Headers','Content-Type');
+    let tableName  = req.query.tableName as string;
+
+    genericTs.allTableSelect().then((result: ApiResponse) => {
+        if (result) {
+            console.log(result);
+            res.json(result);
+        } else {
+            console.error('Beklenen tip veya özellik bulunamadı.');
+        }
+    })
+        .catch((error) => {
+            console.error('Hata oluştu:', error);
+            res.json(error);
+        });
 
 
+});
 
 app.get('/getData',(req:Request, res:Response, next: NextFunction)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -78,17 +143,6 @@ app.get('/getData',(req:Request, res:Response, next: NextFunction)=>{
     );
     res.setHeader('Access-Control-Allow-Headers','Content-Type');
     sfcInfo.getUser();
-
-
-/*
-    db.test.selectTest().then((v)=>{
-        let x =v;
-        res.json(v);
-    }).catch(err=>{
-        console.log(err);
-        next(err);
-    });
-*/
 });
 
 app.listen(port, () => {

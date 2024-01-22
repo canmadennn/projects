@@ -34,6 +34,17 @@
         "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
       },
       {
+        "id": "dbOperationsID",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.dbOperations",
+        "propertyEditor": "com.maden.viewplugins.dbOperations.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.dbOperations.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "dbOperationsTitle",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+      },
+      {
         "id": "userLoginID",
         "type": "VIEW_PLUGIN",
         "allowMultipleInstances": true,

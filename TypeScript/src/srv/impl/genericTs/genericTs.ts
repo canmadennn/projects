@@ -4,11 +4,14 @@ import {ApiResponse} from "../../dto/ApiResponse";
 import { FindOrderResponse } from '../../../apisdk/sapdme_order';
 import {SfcDetailResponse} from "../../../apisdk/sapdme_sfc";
 import {db} from '../../../db';
-import {ISfcAssy, Itest} from "../../../db/models";
+import {ISfcAssy, Itest,IgenericTables} from "../../../db/models";
 import xsenv from "@sap/xsenv";
 import * as hanaClient from '@sap/hana-client';
+import {type} from "os";
+import {error} from "pg-monitor";
 
 export abstract class genericTs{
+
     static  async getBOMInfoBySfc(plant: string , sfc: string): Promise<ApiResponse>{
         let apiResp = new ApiResponse();
         let apiResq = new ApiResponse();
@@ -54,17 +57,10 @@ export abstract class genericTs{
         return apiResp;
     }
 
-    static  async dinamikTable(): Promise<ApiResponse>{
+    static  async dynamicTableCreate(clm:any[],type:any[],tablename:string): Promise<ApiResponse>{
         let apiResp = new ApiResponse();
-
         try{
-            // Dizi oluşturma
-
-            let clm: string[] = ['apple', 'banana', 'orange'];
-            let type: string[] = ['NCHAR(412)', 'NCHAR(412)', 'NCHAR(412)'];
-
-
-                db.genericSql.createGenericTable(clm,type);
+            db.genericSql.createGenericTable(clm,type,tablename);
             apiResp.message = "SCC";
             apiResp.data ="kayit basarili"
             apiResp.status = 200;
@@ -76,6 +72,48 @@ export abstract class genericTs{
         }
         return apiResp;
     }
+
+    static async allTableSelect(): Promise<ApiResponse> {
+        let apiResp = new ApiResponse();
+
+        try {
+            const result: IgenericTables[] | null = await db.genericSql.selectAllTable();
+
+            if (result) {
+                console.log(result);
+                apiResp.message = "SCC";
+                apiResp.data = result;
+                apiResp.status = 200;
+
+            } else {
+                console.error('Beklenen tip veya özellik bulunamadı.');
+            }
+        } catch (error) {
+            console.error('Hata oluştu:', error);
+            const resultError = this.processUnknownType(error); // result: "HELLO"
+            apiResp.data = resultError.toString();
+            apiResp.message = "Error";
+            apiResp.status = 500;
+        }
+
+        return apiResp;
+    }
+
+
+    private static processUnknownType(value: unknown): string {
+        // typeof kontrolü ile tip kontrolü yapabiliriz.
+        if (typeof value === 'string') {
+            // Eğer value bir string ise güvenli bir şekilde kullanabiliriz.
+            return value.toUpperCase();
+        } else {
+            // Eğer value başka bir türde ise, uygun bir şekilde işlem yapmalıyız.
+            console.error('Beklenmeyen tip:', value);
+            return 'Error';
+        }
+    }
+
+
+
 
 
 }

@@ -1,0 +1,78 @@
+<mvc:View
+        xmlns:mvc="sap.ui.core.mvc"
+        displayBlock="true"
+        xmlns="sap.m"
+        xmlns:f="sap.ui.layout.form"
+        xmlns:l="sap.ui.layout"
+        xmlns:core="sap.ui.core"
+        xmlns:ui="sap.ui.table"
+        controllerName="com.maden.viewplugins.dbOperations.controller.PluginView"
+        width="100%"
+        height="100%">
+    <Page showHeader="false" title="" showFooter="true" showNavButton="false">
+        <content>
+            <l:VerticalLayout id="containerLayout" width="100%">
+                <l:BlockLayout id="BlockLayout" background="{/selectedBackground}">
+                    <l:BlockLayoutRow>
+                        <l:BlockLayoutCell>
+                            <Panel width="100%" height="100%" expandable="false" expanded="true" accessibleRole="Region"
+                                   backgroundDesign="Transparent">
+                                <content>
+                                    <VBox justifyContent="Center" alignItems="Center">
+                                        <HBox justifyContent="Center" alignItems="Center">
+                                            <Text text="Tablo Adı:"/>
+                                            <Label text="" width="1rem"/>
+                                            <Input id="tableNameInput" placeholder="Tablo Adı"   />
+                                        </HBox>
+                                        <Table
+                                                id="createTable"
+                                                inset="false"
+                                                items="{/tableData}"
+                                                >
+                                            <columns>
+                                                <Column>
+                                                    <Text text="Kolon İsmi"/>
+                                                </Column>
+                                                <Column>
+                                                    <Text text="Kolon Türü"/>
+                                                </Column>
+                                                <Column width="50px">
+                                                    <Text text=""/>
+                                                </Column>
+                                            </columns>
+                                            <items>
+                                                <ColumnListItem>
+                                                    <cells>
+                                                        <Input id="clmInput" value="{colName}"/>
+                                                        <ComboBox width="300px" showClearIcon="true" id="packageType" items="{getClmTypeModel>/item}" selectionChange="onComboBoxSelectionChange">
+                                                            <core:Item key="{getClmTypeModel>Type}" text="{getClmTypeModel>Type}" />
+                                                        </ComboBox>
+                                                        <Button icon="sap-icon://delete" press="onDeleteRow"/>
+                                                    </cells>
+                                                </ColumnListItem>
+                                            </items>
+                                        </Table>
+                                        <HBox>
+                                        <Button text="Yeni Satır" press="onAddRow" textAlign="Center" width="10rem"/>
+                                        <Button text="Tablo Oluştur" press="onGetAllData" textAlign="Center" width="10rem"/>
+                                        </HBox>
+                                    </VBox>
+                                </content>
+                            </Panel>
+                        </l:BlockLayoutCell>
+                    </l:BlockLayoutRow>
+                    <l:BlockLayoutRow>
+                        <l:BlockLayoutCell>
+                            <Panel width="100%" height="100%" expandable="false" expanded="true" accessibleRole="Region"
+                                   backgroundDesign="Transparent">
+                                <content>
+
+                                </content>
+                            </Panel>
+                        </l:BlockLayoutCell>
+                    </l:BlockLayoutRow>
+                </l:BlockLayout>
+            </l:VerticalLayout>
+        </content>
+    </Page>
+</mvc:View>

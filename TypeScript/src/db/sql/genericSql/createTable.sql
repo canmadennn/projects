@@ -10,11 +10,14 @@ BEGIN
 END $$;
 */
 
+
+
+
 DO $$
 DECLARE
-  table_name text := 'dynamic_table';
-  columns text[] := ARRAY[quote_ident($1)];
-  types text[] := ARRAY[quote_ident($2)];
+  table_name text := $3;
+  columns text[] := $1;
+      types text[] := $2;
   dynamic_query text;
 BEGIN
   dynamic_query := 'CREATE TABLE ' || quote_ident(table_name) || ' (ID SERIAL PRIMARY KEY, ';
@@ -26,9 +29,11 @@ BEGIN
     END IF;
   END LOOP;
 
-  dynamic_query := dynamic_query;
+  dynamic_query := dynamic_query || ')';
+
+
+  RAISE NOTICE 'dynamic_query: %', dynamic_query;
 
   EXECUTE dynamic_query;
 END $$;
-
 

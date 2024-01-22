@@ -40,13 +40,10 @@ class genericTs {
         }
         return apiResp;
     }
-    static async dinamikTable() {
+    static async dynamicTableCreate(clm, type, tablename) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
-            // Dizi oluşturma
-            let clm = ['apple', 'banana', 'orange'];
-            let type = ['NCHAR(412)', 'NCHAR(412)', 'NCHAR(412)'];
-            db_1.db.genericSql.createGenericTable(clm, type);
+            db_1.db.genericSql.createGenericTable(clm, type, tablename);
             apiResp.message = "SCC";
             apiResp.data = "kayit basarili";
             apiResp.status = 200;
@@ -57,6 +54,41 @@ class genericTs {
             apiResp.status = 500;
         }
         return apiResp;
+    }
+    static async allTableSelect() {
+        let apiResp = new ApiResponse_1.ApiResponse();
+        try {
+            const result = await db_1.db.genericSql.selectAllTable();
+            if (result) {
+                console.log(result);
+                apiResp.message = "SCC";
+                apiResp.data = result;
+                apiResp.status = 200;
+            }
+            else {
+                console.error('Beklenen tip veya özellik bulunamadı.');
+            }
+        }
+        catch (error) {
+            console.error('Hata oluştu:', error);
+            const resultError = this.processUnknownType(error); // result: "HELLO"
+            apiResp.data = resultError.toString();
+            apiResp.message = "Error";
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
+    static processUnknownType(value) {
+        // typeof kontrolü ile tip kontrolü yapabiliriz.
+        if (typeof value === 'string') {
+            // Eğer value bir string ise güvenli bir şekilde kullanabiliriz.
+            return value.toUpperCase();
+        }
+        else {
+            // Eğer value başka bir türde ise, uygun bir şekilde işlem yapmalıyız.
+            console.error('Beklenmeyen tip:', value);
+            return 'Error';
+        }
     }
 }
 exports.genericTs = genericTs;

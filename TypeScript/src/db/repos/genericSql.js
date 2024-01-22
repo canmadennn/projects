@@ -26,9 +26,12 @@ class GenericSqlRepository {
           i.e. only once, as a singleton.
         */
     }
-    createGenericTable(value1, value2) {
-        return this.db.none(sql_1.genericSql.create, [value1, value2]);
+    createGenericTable(tableColumns, tableColumnsType, tableName) {
+        return this.db.none(sql_1.genericSql.createTable, [tableColumns, tableColumnsType, tableName]);
         //return this.db.result('select * from test');
+    }
+    selectAllTable() {
+        return this.db.any(sql_1.genericSql.selectAllTable);
     }
 }
 exports.GenericSqlRepository = GenericSqlRepository;

@@ -30,7 +30,10 @@ export const test = {
 };
 
 export const genericSql = {
-    create: sql('genericSql/createTable.sql')
+    createTable: sql('genericSql/createTable.sql'),
+    dropTable:sql('genericSql/dropTable.sql'),
+    selectAllTable:sql('genericSql/selectAllTable.sql')
+
 };
 
 export const userOperations = {

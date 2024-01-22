@@ -28,7 +28,9 @@ exports.test = {
     select: sql('test/select.sql')
 };
 exports.genericSql = {
-    create: sql('genericSql/createTable.sql')
+    createTable: sql('genericSql/createTable.sql'),
+    dropTable: sql('genericSql/dropTable.sql'),
+    selectAllTable: sql('genericSql/selectAllTable.sql')
 };
 exports.userOperations = {
     create: sql('userOperations/create.sql')
