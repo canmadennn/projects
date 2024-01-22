@@ -97,7 +97,7 @@ sap.ui.define([
 
             params["tableName"] = this.getView().byId("tableNameInput").getValue();
 
-            apiPostFetch("createGenericTable",params,this.setPropx.bind(this));
+            apiPostAjax("createGenericTable",params,this.setPropx.bind(this));//retun mesajı ve backend'de error u döndür error dönmüyor backandde
         },
 
         setPropx: function(data) {
