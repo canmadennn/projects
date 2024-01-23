@@ -27,8 +27,15 @@ class GenericSqlRepository {
         */
     }
     createGenericTable(tableColumns, tableColumnsType, tableName) {
-        return this.db.none(sql_1.genericSql.createTable, [tableColumns, tableColumnsType, tableName]);
-        //return this.db.result('select * from test');
+        return new Promise((resolve, reject) => {
+            this.db.none(sql_1.genericSql.createTable, [tableColumns, tableColumnsType, tableName])
+                .then(() => {
+                resolve({ success: true, message: "Tablo başarıyla oluşturuldu." });
+            })
+                .catch((error) => {
+                reject({ success: false, message: `Tablo oluşturma hatası: ${error.message || "Bilinmeyen bir hata"}` });
+            });
+        });
     }
     selectAllTable() {
         return this.db.any(sql_1.genericSql.selectAllTable);

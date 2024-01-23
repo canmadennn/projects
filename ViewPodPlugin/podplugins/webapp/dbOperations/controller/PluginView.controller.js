@@ -2,73 +2,37 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/dm/dme/podfoundation/controller/PluginViewController",
     "sap/dm/dme/podfoundation/model/PodType",
-    "../script/apiCaller"
-], function(JSONModel, PluginViewController, PodType,costum) {
+    "../script/apiCaller",
+    "sap/m/MessageBox"
+], function (JSONModel, PluginViewController, PodType, costum, MessageBox) {
     "use strict";
-    var cess="s";
+    var cess = "s";
 
     var oPluginViewController = PluginViewController.extend("com.maden.viewplugins.dbOperations.controller.PluginView", {
-        metadata : {
-            properties: {
-            }
-        },
-
-        onAfterRendering(){},
-        onInit: function() {
-            if (PluginViewController.prototype.onInit) {
-                PluginViewController.prototype.onInit.apply(this, arguments);
-            }
-            var oModel = new JSONModel({
-                tableData: []
-            });
-            this.getView().setModel(oModel);
-                const oData = {
-                    "item": [
-                        {
-                            "Type":"VARCHAR(255)"
-                        },
-                        {
-                            "Type":"NUMERIC"
-                        },
-                        {
-                            "Type":"BOOLEAN"
-                        },
-                        {
-                            "Type":"TIMESTAMP"
-                        },
-                        {
-                            "Type":"INTEGER"
-                        }
-                        ]
-                };
-
-            oModel = new JSONModel();
-            oModel.setData(oData);
-            this.getView().setModel(oModel, "getClmTypeModel");
-
-
-        },
-
-        onBeforeRenderingPlugin: function() {
-            this.subscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
-            this.subscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
-            this.subscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
-        },
-
-        onExit: function() {
-            if (PluginViewController.prototype.onExit) {
-                PluginViewController.prototype.onExit.apply(this, arguments);
-            }
-            this.unsubscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
-            this.unsubscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
-            this.unsubscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
+        metadata: {
+            properties: {}
         },
 
         onAddRow: function () {
             var oModel = this.getView().getModel();
             var aTableData = oModel.getProperty("/tableData");
-            aTableData.push({ colName: "", colType: "" });
+            aTableData.push({colName: "", colType: ""});
             oModel.setProperty("/tableData", aTableData);
+        },
+        onAfterRendering() {
+        },
+
+        onBeforeRenderingPlugin: function () {
+            this.subscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
+            this.subscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
+            this.subscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
+        },
+
+        onComboBoxSelectionChange: function (oEvent) {
+            var oComboBox = oEvent.getSource();
+            var sSelectedText = oComboBox.getSelectedItem().getText();
+            var index = oEvent.getSource().getParent().getBindingContext().getPath().split("/")[2]
+            this.getView().getModel().getProperty("/tableData")[index].colType = sSelectedText;
         },
 
         onDeleteRow: function (oEvent) {
@@ -80,39 +44,89 @@ sap.ui.define([
             oModel.setProperty("/tableData", aTableData);
         },
 
-        onGetAllData: function() {
-            var oTable = this.byId("createTable");
-            var oModel = oTable.getModel(); //
-            var aTableData = oModel.getProperty("/tableData");
+        onExit: function () {
+            if (PluginViewController.prototype.onExit) {
+                PluginViewController.prototype.onExit.apply(this, arguments);
+            }
+            this.unsubscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
+            this.unsubscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
+            this.unsubscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
+        },
+
+        onGetAllData: function () {
+           var tableNameInput= this.getView().byId("tableNameInput").getValue();
             var params = {
                 "clm": [],
                 "type": [],
                 "tableName": ""
             };
+            var oTable = this.byId("createTable");
+            var oModel = oTable.getModel(); //
+            var aTableData = oModel.getProperty("/tableData");
+            if (aTableData.length === 0) return MessageBox.error("tablo alanaları bos");
+            if (tableNameInput === "") return MessageBox.error("tablo ismi bos");
 
-            aTableData.forEach(function(columnData) {
-                params["clm"].push(columnData.colName);
-                params["type"].push(columnData.colType);
+
+            var hasError = aTableData.some(function(columnData) {
+                if (columnData.colName === "" || columnData.colType === "") {
+                    MessageBox.error("hata2");
+                    return true;
+                }
+                return false;
             });
 
-            params["tableName"] = this.getView().byId("tableNameInput").getValue();
+            if (hasError) return;
 
-            apiPostAjax("createGenericTable",params,this.setPropx.bind(this));//retun mesajı ve backend'de error u döndür error dönmüyor backandde
+            aTableData.forEach(function(columnData) {
+                params["clm"].push(columnData.colName.toUpperCase());
+                params["type"].push(columnData.colType.toUpperCase());
+            });
+            params["tableName"] = tableNameInput;
+
+            apiPostAjax("createGenericTable", params,this.setPropx.bind(this));
         },
 
-        setPropx: function(data) {
-            console.log(data);
+        setPropx: function (data) {
+            sap.m.MessageBox.show(data.message, data.status === 200 ? "S" : "E");
+        },
+
+        onInit: function () {
+            if (PluginViewController.prototype.onInit) {
+                PluginViewController.prototype.onInit.apply(this, arguments);
+            }
+            var oModel = new JSONModel({
+                tableData: []
+            });
+            this.getView().setModel(oModel);
+            const oData = {
+                "item": [
+                    {
+                        "Type": "VARCHAR(255)"
+                    },
+                    {
+                        "Type": "NUMERIC"
+                    },
+                    {
+                        "Type": "BOOLEAN"
+                    },
+                    {
+                        "Type": "TIMESTAMP"
+                    },
+                    {
+                        "Type": "INTEGER"
+                    }
+                ]
+            };
+
+            oModel = new JSONModel();
+            oModel.setData(oData);
+            this.getView().setModel(oModel, "getClmTypeModel");
+
+
         },
 
 
 
-
-        onComboBoxSelectionChange: function(oEvent) {
-            var oComboBox = oEvent.getSource();
-            var sSelectedText = oComboBox.getSelectedItem().getText();
-            var index = oEvent.getSource().getParent().getBindingContext().getPath().split("/")[2]
-            this.getView().getModel().getProperty("/tableData")[index].colType=sSelectedText;
-        },
     })
     return oPluginViewController;
 });

@@ -57,17 +57,22 @@ export abstract class genericTs{
         return apiResp;
     }
 
-    static  async dynamicTableCreate(clm:any[],type:any[],tablename:string): Promise<ApiResponse>{
+    static async dynamicTableCreate(clm: any[], type: any[], tablename: string): Promise<ApiResponse> {
         let apiResp = new ApiResponse();
-        try{
-            db.genericSql.createGenericTable(clm,type,tablename);
-            apiResp.message = "SCC";
-            apiResp.data ="kayit basarili"
-            apiResp.status = 200;
-        }
-        catch (e: any){
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
+        try {
+            // createGenericTable fonksiyonu bir Promise döndürdüğü için await ile bekleyebiliriz.
+            const result = await db.genericSql.createGenericTable(clm, type, tablename);
+
+            // result değeri success özelliğine göre kontrol edildi.
+            if (result.success) {
+                apiResp.message = result.message;
+                apiResp.status = 200;
+            } else {
+                apiResp.message = result.message;
+                apiResp.status = 500;
+            }
+        } catch (e: any) {
+            apiResp.message = e.message;
             apiResp.status = 500;
         }
         return apiResp;
@@ -79,7 +84,7 @@ export abstract class genericTs{
         try {
             const result: IgenericTables[] | null = await db.genericSql.selectAllTable();
 
-            if (result) {
+            if (result!=null) {
                 console.log(result);
                 apiResp.message = "SCC";
                 apiResp.data = result;

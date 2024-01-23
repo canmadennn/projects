@@ -47,11 +47,34 @@ function apiPostAjax(service, params) {
              xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
              xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
          },*/
-        success: function (data) {
-            console.log('API yanıtı:', data);
+        success: function (data,xhr) {
+            console.log('API yanıtı:', data.message);
+            sap.m.MessageBox.show(data.message,"S");
+
         },
-        error: function (xhr, status, error) {
-            console.error('Hata:', error);
+        error: function (xhr, status, data) {
+            console.error('Hata:', xhr.responseJSON.message);
+            sap.m.MessageBox.error(xhr.responseJSON.message, {
+                title: "Error",
+                actions: sap.m.MessageBox.Action.CLOSE
+            }.bind(this));
+        }
+    });
+}
+
+function apiPostAjax(service, params,afterMethod) {
+    $.ajax({
+        url: API_URL + service,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(params),
+        success: function (data,xhr) {
+            afterMethod === undefined ? sap.m.MessageBox.show(data.message, "S") : afterMethod(data);
+           // console.log('API yanıtı:', data.message);
+        },
+        error: function (xhr, status, data) {
+           // console.error('Hata:', xhr.responseJSON.message);
+            afterMethod === undefined ? sap.m.MessageBox.show(xhr.responseJSON.message, "E") : afterMethod(xhr.responseJSON);
         }
     });
 }

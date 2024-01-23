@@ -43,14 +43,20 @@ class genericTs {
     static async dynamicTableCreate(clm, type, tablename) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
-            db_1.db.genericSql.createGenericTable(clm, type, tablename);
-            apiResp.message = "SCC";
-            apiResp.data = "kayit basarili";
-            apiResp.status = 200;
+            // createGenericTable fonksiyonu bir Promise döndürdüğü için await ile bekleyebiliriz.
+            const result = await db_1.db.genericSql.createGenericTable(clm, type, tablename);
+            // result değeri success özelliğine göre kontrol edildi.
+            if (result.success) {
+                apiResp.message = result.message;
+                apiResp.status = 200;
+            }
+            else {
+                apiResp.message = result.message;
+                apiResp.status = 500;
+            }
         }
         catch (e) {
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
+            apiResp.message = e.message;
             apiResp.status = 500;
         }
         return apiResp;
