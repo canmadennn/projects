@@ -81,10 +81,10 @@ sap.ui.define([
 
             if (hasError) return;
             aTableData.forEach(function(columnData) {
-                params["clm"].push(columnData.colName.toUpperCase());
-                params["type"].push(columnData.colType.toUpperCase());
+                params["clm"].push(columnData.colName.toUpperCase().trim());
+                params["type"].push(columnData.colType.toUpperCase().trim());
             });
-            params["tableName"] = tableNameInput;
+            params["tableName"] = tableNameInput.toUpperCase().trim();
 
             apiPostAjax("createGenericTable",params,this.onTableCreateReturn.bind(this));
         },
