@@ -1,1 +1,4 @@
-DROP TABLE $1;
+DO $$
+BEGIN
+  EXECUTE 'DROP TABLE ' || quote_ident($1);
+END $$;

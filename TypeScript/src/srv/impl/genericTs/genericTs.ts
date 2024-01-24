@@ -78,6 +78,30 @@ export abstract class genericTs{
         return apiResp;
     }
 
+    static async dropTable(tablename:string): Promise<ApiResponse> {
+        let apiResp = new ApiResponse();
+
+        try {
+
+            const result = await db.genericSql.dropGenericTable(tablename);
+
+            if (result!=null) {
+                console.log(result);
+                apiResp.message = result.message;
+                apiResp.data = result;
+                apiResp.status = 200;
+
+            }
+        } catch (error:any) {
+            console.error('Hata oluştu:', error.message);
+            apiResp.data = error;
+            apiResp.message = error.message;
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
+
+
     static async allTableSelect(): Promise<ApiResponse> {
         let apiResp = new ApiResponse();
 

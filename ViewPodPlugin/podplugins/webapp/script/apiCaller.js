@@ -22,6 +22,24 @@ function apiGET(service, param, afterMethod) {
     });
 }
 
+function apiGETNoParam(service, afterMethod) {
+    $.ajax({
+        url: API_URL + service,
+        type: "GET",
+        async: false,
+        success: function (data) {
+            console.log("Ajax Response: " + data);
+            afterMethod(data);
+        },
+        error: function (error) {
+            sap.m.MessageBox.error(error.responseText, {
+                title: "Error",
+                actions: sap.m.MessageBox.Action.CLOSE
+            }.bind(this));
+        },
+    });
+}
+
 function apiPostFetch(service, params,afterMethod) {
     fetch(API_URL + service , {
         method: "POST",
@@ -36,7 +54,7 @@ function apiPostFetch(service, params,afterMethod) {
 
 }
 
-function apiPostAjax(service, params) {
+function apiPostAjax(service, params,afterMethod) {
     $.ajax({
         url: API_URL + service,
         type: 'POST',
@@ -49,6 +67,7 @@ function apiPostAjax(service, params) {
          },*/
         success: function (data) {
             console.log('API yanıtı:', data);
+            afterMethod(data)
         },
         error: function (xhr, status, error) {
             console.error('Hata:', error);

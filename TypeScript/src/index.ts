@@ -67,11 +67,6 @@ app.post('/ornekEndpoint', (req, res) => {
 
 app.post('/createGenericTable', (req, res,next:NextFunction) => {
     const requestData = req.body;
-    requestData.clm;
-    requestData.type;
-    requestData.tableName;
-     let clm:string[]=["test1","test2"];
-     let type:string[]=["NCHAR(412)","NCHAR(412","NCHAR(412"]
     genericTs.dynamicTableCreate(requestData.clm,requestData.type,requestData.tableName).then((v: ApiResponse)=>{
         if(v.status !== 200 && v.status !== 201) {
             if (typeof v.status === "number") {
@@ -86,39 +81,25 @@ app.post('/createGenericTable', (req, res,next:NextFunction) => {
 
 });
 
-/*app.get('/createGenericTable',(req:Request,res:Response,next:NextFunction)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-
-
-    genericTs.dynamicTableCreate().then((v: ApiResponse)=>{
-        if(v.status !== 200 && v.status !== 201) {
-            if (typeof v.status === "number") {
-                res.status(v.status);
-            }
-            else res.status(500);
-            res.json(v);
+app.get('/dropTable',(req:Request, res:Response, next: NextFunction)=>{
+    let tableName  = req.query.tableName as string;
+    genericTs.dropTable(tableName).then((result: ApiResponse) => {
+        if (result) {
+            console.log(result);
+            res.json(result);
+        } else {
+            console.error('Beklenen tip veya özellik bulunamadı.');
         }
-        else
-            res.json(v);
-    }).catch(err => next(err));
+    })
+        .catch((error) => {
+            console.error('Hata oluştu:', error);
+            res.json(error);
+        });
 
 
 });
-*/
 
 app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader('Access-Control-Allow-Headers','Content-Type');
-    let tableName  = req.query.tableName as string;
-
     genericTs.allTableSelect().then((result: ApiResponse) => {
         if (result) {
             console.log(result);

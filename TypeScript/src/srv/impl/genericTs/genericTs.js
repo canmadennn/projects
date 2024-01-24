@@ -61,11 +61,30 @@ class genericTs {
         }
         return apiResp;
     }
+    static async dropTable(tablename) {
+        let apiResp = new ApiResponse_1.ApiResponse();
+        try {
+            const result = await db_1.db.genericSql.dropGenericTable(tablename);
+            if (result != null) {
+                console.log(result);
+                apiResp.message = result.message;
+                apiResp.data = result;
+                apiResp.status = 200;
+            }
+        }
+        catch (error) {
+            console.error('Hata oluştu:', error.message);
+            apiResp.data = error;
+            apiResp.message = error.message;
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
     static async allTableSelect() {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
             const result = await db_1.db.genericSql.selectAllTable();
-            if (result) {
+            if (result != null) {
                 console.log(result);
                 apiResp.message = "SCC";
                 apiResp.data = result;

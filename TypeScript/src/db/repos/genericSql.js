@@ -37,6 +37,17 @@ class GenericSqlRepository {
             });
         });
     }
+    dropGenericTable(tableName) {
+        return new Promise((resolve, reject) => {
+            this.db.none(sql_1.genericSql.dropTable, [tableName])
+                .then(() => {
+                resolve({ success: true, message: "Tablo başarıyla silindi." });
+            })
+                .catch((error) => {
+                reject({ success: false, message: `Tablo silme hatası: ${error.message || "Bilinmeyen bir hata"}` });
+            });
+        });
+    }
     selectAllTable() {
         return this.db.any(sql_1.genericSql.selectAllTable);
     }

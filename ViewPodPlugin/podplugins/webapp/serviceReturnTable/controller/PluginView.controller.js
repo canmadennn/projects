@@ -2,8 +2,8 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/dm/dme/podfoundation/controller/PluginViewController",
     "sap/dm/dme/podfoundation/model/PodType",
-    "../script/costum",
-    "../script/apiCaller",
+    "../../script/costum",
+    "../../script/apiCaller",
     "../script/customStyle",
 ], function(JSONModel, PluginViewController, PodType,costum,css) {
     "use strict";

@@ -2,7 +2,7 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/dm/dme/podfoundation/controller/PluginViewController",
     "sap/dm/dme/podfoundation/model/PodType",
-    "../script/apiCaller",
+    "../../script/apiCaller",
     "sap/m/MessageBox"
 ], function (JSONModel, PluginViewController, PodType, costum, MessageBox) {
     "use strict";
@@ -10,7 +10,12 @@ sap.ui.define([
 
     var oPluginViewController = PluginViewController.extend("com.maden.viewplugins.dbOperations.controller.PluginView", {
         metadata: {
-            properties: {}
+            properties: {
+                sampleProperty: {
+                    type: "string",
+                    defaultValue: "Hello World"
+                }
+            }
         },
 
         onAddRow: function () {
@@ -18,6 +23,7 @@ sap.ui.define([
             var aTableData = oModel.getProperty("/tableData");
             aTableData.push({colName: "", colType: ""});
             oModel.setProperty("/tableData", aTableData);
+            //this.getMetadata().getProperties();
         },
         onAfterRendering() {
         },
@@ -53,7 +59,7 @@ sap.ui.define([
             this.unsubscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
         },
 
-        onGetAllData: function () {
+        onTableCreate: function () {
            var tableNameInput= this.getView().byId("tableNameInput").getValue();
             var params = {
                 "clm": [],
@@ -65,8 +71,6 @@ sap.ui.define([
             var aTableData = oModel.getProperty("/tableData");
             if (aTableData.length === 0) return MessageBox.error("tablo alanaları bos");
             if (tableNameInput === "") return MessageBox.error("tablo ismi bos");
-
-
             var hasError = aTableData.some(function(columnData) {
                 if (columnData.colName === "" || columnData.colType === "") {
                     MessageBox.error("hata2");
@@ -76,18 +80,41 @@ sap.ui.define([
             });
 
             if (hasError) return;
-
             aTableData.forEach(function(columnData) {
                 params["clm"].push(columnData.colName.toUpperCase());
                 params["type"].push(columnData.colType.toUpperCase());
             });
             params["tableName"] = tableNameInput;
 
-            apiPostAjax("createGenericTable", params,this.setPropx.bind(this));
+            apiPostAjax("createGenericTable",params,this.onTableCreateReturn.bind(this));
         },
 
-        setPropx: function (data) {
+        onTableCreateReturn: function (data) {
             sap.m.MessageBox.show(data.message, data.status === 200 ? "S" : "E");
+            this.allTableData();
+            //scc dönerse tablonun içindeki verileri clear at
+        },
+
+        allTableData:function (data) {
+            if (data !== undefined) {
+                sap.m.MessageBox.show(data.message, data.status === 200 ? "S" : "E");
+                data.status === 200 && this.getView().byId("existingTablesCombo").setSelectedKey("");
+            }
+            apiGETNoParam("allTableSelect", this.allTableModel.bind(this));
+        },
+        allTableModel:function (data) {
+            var oModel = new JSONModel();
+            oModel.setSizeLimit(1000);
+            oModel.setData(data.data);
+            this.getView().setModel(oModel, "existingTables");
+        },
+
+        onDeleteTableButton:function () {
+            let comboBoxData= this.getView().byId("existingTablesCombo").getSelectedKey();
+           var params={
+                "tableName":comboBoxData
+            };
+            apiGET("dropTable",params,this.allTableData.bind(this));
         },
 
         onInit: function () {
@@ -122,7 +149,7 @@ sap.ui.define([
             oModel.setData(oData);
             this.getView().setModel(oModel, "getClmTypeModel");
 
-
+            this.allTableData();
         },
 
 
