@@ -1,61 +1,9 @@
-import {OrderApi} from "../../OrderApi";
-import {sfcInfoDto} from "../../dto/sfcInfo/sfcInfoDto";
 import {ApiResponse} from "../../dto/ApiResponse";
-import { FindOrderResponse } from '../../../apisdk/sapdme_order';
-import {SfcDetailResponse} from "../../../apisdk/sapdme_sfc";
 import {db} from '../../../db';
 import {ISfcAssy, Itest,IgenericTables} from "../../../db/models";
-import xsenv from "@sap/xsenv";
-import * as hanaClient from '@sap/hana-client';
-import {type} from "os";
-import {error} from "pg-monitor";
+
 
 export abstract class genericTs{
-
-    static  async getBOMInfoBySfc(plant: string , sfc: string): Promise<ApiResponse>{
-        let apiResp = new ApiResponse();
-        let apiResq = new ApiResponse();
-        try{
-
-            let componentsResponse = new sfcInfoDto();
-
-            // @ts-ignore
-            let orderResp: FindOrderResponse = (await OrderApi.getOrders(plant, sfc)).data;
-            // @ts-ignore
-            // let sfcResp: SfcDetailResponse = (await OrderApi.getSfcDetails(plant, orderResp.sfcs[0])).data;
-
-
-            apiResp=await OrderApi.getSfcDetails(plant, orderResp.sfcs[0]);
-
-
-
-
-            //  apiResp.data = sfcResp;
-        }
-        catch (e: any){
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
-            apiResp.status = 500;
-        }
-        return apiResp;
-    }
-
-    static  async getUser(): Promise<ApiResponse>{
-        let apiResp = new ApiResponse();
-
-        try{
-            db.userOperations.createUserTable();
-            apiResp.message = "SCC";
-            apiResp.data ="kayit basarili"
-            apiResp.status = 200;
-        }
-        catch (e: any){
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
-            apiResp.status = 500;
-        }
-        return apiResp;
-    }
 
     static async dynamicTableCreate(clm: any[], type: any[], tablename: string): Promise<ApiResponse> {
         let apiResp = new ApiResponse();
@@ -131,15 +79,12 @@ export abstract class genericTs{
     static async dynamicSelectTable(where: any[], param: any[], tablename: string): Promise<ApiResponse> {
         let apiResp = new ApiResponse();
         try {
-            const result = await db.genericSql.dynamicSelectTable(where, param, tablename);
-            if (result.success) {
-                apiResp.message = result.message;
-                apiResp.status = 200;
-            } else {
-                apiResp.message = result.message;
-                apiResp.status = 500;
-            }
+            const result:any = await db.genericSql.dynamicSelectTable(where, param, tablename);
+            apiResp.message = "SCC";
+            apiResp.data = result;
+            apiResp.status = 200;
         } catch (e: any) {
+            console.log(e);
             apiResp.message = e.message;
             apiResp.status = 500;
         }
@@ -148,12 +93,12 @@ export abstract class genericTs{
 
 
     private static processUnknownType(value: unknown): string {
-        // typeof kontrolü ile tip kontrolü yapabiliriz.
+        // typeof kontrolü
         if (typeof value === 'string') {
             // Eğer value bir string ise güvenli bir şekilde kullanabiliriz.
             return value.toUpperCase();
         } else {
-            // Eğer value başka bir türde ise, uygun bir şekilde işlem yapmalıyız.
+            // else if ile farklı türler eklenir ve olası dönüşümü yap
             console.error('Beklenmeyen tip:', value);
             return 'Error';
         }

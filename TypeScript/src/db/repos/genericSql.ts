@@ -3,6 +3,7 @@ import {IResult} from 'pg-promise/typescript/pg-subset';
 import {IgenericTables} from '../models';
 import {genericSql as sql} from '../sql';
 import {test as test} from '../test';
+import {promises} from "dns";
 
 
 /*
@@ -60,23 +61,22 @@ export class GenericSqlRepository {
 
 
 
-    dynamicSelectTable(where: any[], param: any[], tablename: string): Promise<{  }> {
+
+     dynamicSelectTable(where: any[], param: any[], tablename: string) {
         return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                try {
+                    // Asenkron bir işlem simülasyonu (örneğin, bir veritabanı sorgusu)
+                    const result = this.db.any(sql.selectSelectedTable);
 
-            this.db.none(sql.selectSelectedTable, [where,param,tablename])
-                .then(() => {
-                    resolve({
-
-                        success: true, message: "Tablo başarıyla silindi."
-
-                    });
-                })
-                .catch((error) => {
-                    reject({ success: false, message: `Tablo silme hatası: ${error.message || "Bilinmeyen bir hata"}` });
-                });
+                    // Sorgu sonucunu resolve et
+                    resolve(result);
+                } catch (error) {
+                    // Hata durumunu reject et
+                    reject("Hata oluştu: " + error);
+                }
+            }, 1000);
         });
-
-
     }
 
 

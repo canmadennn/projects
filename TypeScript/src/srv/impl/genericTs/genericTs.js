@@ -103,6 +103,21 @@ class genericTs {
         }
         return apiResp;
     }
+    static async dynamicSelectTable(where, param, tablename) {
+        let apiResp = new ApiResponse_1.ApiResponse();
+        try {
+            const result = await db_1.db.genericSql.dynamicSelectTable(where, param, tablename);
+            apiResp.message = "SCC";
+            apiResp.data = result;
+            apiResp.status = 200;
+        }
+        catch (e) {
+            console.log(e);
+            apiResp.message = e.message;
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
     static processUnknownType(value) {
         // typeof kontrolü ile tip kontrolü yapabiliriz.
         if (typeof value === 'string') {

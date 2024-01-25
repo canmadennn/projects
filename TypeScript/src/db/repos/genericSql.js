@@ -48,6 +48,22 @@ class GenericSqlRepository {
             });
         });
     }
+    dynamicSelectTable(where, param, tablename) {
+        return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                try {
+                    // Asenkron bir işlem simülasyonu (örneğin, bir veritabanı sorgusu)
+                    const result = this.db.any(sql_1.genericSql.selectSelectedTable);
+                    // Sorgu sonucunu resolve et
+                    resolve(result);
+                }
+                catch (error) {
+                    // Hata durumunu reject et
+                    reject("Hata oluştu: " + error);
+                }
+            }, 1000);
+        });
+    }
     selectAllTable() {
         return this.db.any(sql_1.genericSql.selectAllTable);
     }
