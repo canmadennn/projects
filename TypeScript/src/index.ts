@@ -118,7 +118,7 @@ app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
 
 app.post('/selectTable', (req, res,next:NextFunction) => {
     const requestData = req.body;
-    genericTs.dynamicSelectTable(requestData.where,requestData.param,requestData.tableName).then((v: ApiResponse)=>{
+    genericTs.dynamicSelectTable(requestData.conditions,requestData.selectColumns,requestData.table,requestData.methot,requestData.sharedData).then((v: ApiResponse)=>{
         if(v.status !== 200 && v.status !== 201) {
             if (typeof v.status === "number") {
                 res.status(v.status);

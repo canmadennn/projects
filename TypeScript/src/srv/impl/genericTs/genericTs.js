@@ -1,45 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.genericTs = void 0;
-const OrderApi_1 = require("../../OrderApi");
-const sfcInfoDto_1 = require("../../dto/sfcInfo/sfcInfoDto");
 const ApiResponse_1 = require("../../dto/ApiResponse");
 const db_1 = require("../../../db");
 class genericTs {
-    static async getBOMInfoBySfc(plant, sfc) {
-        let apiResp = new ApiResponse_1.ApiResponse();
-        let apiResq = new ApiResponse_1.ApiResponse();
-        try {
-            let componentsResponse = new sfcInfoDto_1.sfcInfoDto();
-            // @ts-ignore
-            let orderResp = (await OrderApi_1.OrderApi.getOrders(plant, sfc)).data;
-            // @ts-ignore
-            // let sfcResp: SfcDetailResponse = (await OrderApi.getSfcDetails(plant, orderResp.sfcs[0])).data;
-            apiResp = await OrderApi_1.OrderApi.getSfcDetails(plant, orderResp.sfcs[0]);
-            //  apiResp.data = sfcResp;
-        }
-        catch (e) {
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
-            apiResp.status = 500;
-        }
-        return apiResp;
-    }
-    static async getUser() {
-        let apiResp = new ApiResponse_1.ApiResponse();
-        try {
-            db_1.db.userOperations.createUserTable();
-            apiResp.message = "SCC";
-            apiResp.data = "kayit basarili";
-            apiResp.status = 200;
-        }
-        catch (e) {
-            apiResp.data = e.toString();
-            apiResp.message = "Error";
-            apiResp.status = 500;
-        }
-        return apiResp;
-    }
     static async dynamicTableCreate(clm, type, tablename) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
@@ -103,10 +67,10 @@ class genericTs {
         }
         return apiResp;
     }
-    static async dynamicSelectTable(where, param, tablename) {
+    static async dynamicSelectTable(conditions, selectColumns, table, methot, sharedData) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
-            const result = await db_1.db.genericSql.dynamicSelectTable(where, param, tablename);
+            const result = await db_1.db.genericSql.dynamicSelectTable(conditions, selectColumns, table, methot, sharedData);
             apiResp.message = "SCC";
             apiResp.data = result;
             apiResp.status = 200;
@@ -119,13 +83,13 @@ class genericTs {
         return apiResp;
     }
     static processUnknownType(value) {
-        // typeof kontrolü ile tip kontrolü yapabiliriz.
+        // typeof kontrolü
         if (typeof value === 'string') {
             // Eğer value bir string ise güvenli bir şekilde kullanabiliriz.
             return value.toUpperCase();
         }
         else {
-            // Eğer value başka bir türde ise, uygun bir şekilde işlem yapmalıyız.
+            // else if ile farklı türler eklenir ve olası dönüşümü yap
             console.error('Beklenmeyen tip:', value);
             return 'Error';
         }

@@ -117,6 +117,15 @@ sap.ui.define([
             apiGET("dropTable",params,this.allTableData.bind(this));
         },
 
+        selectTableData:function () {
+
+            apiPostAjax("selectTable",params,this.selectTableModel.bind(this));
+        },
+
+        selectTableModel:function (data) {
+            console.log(data);
+        },
+
         onInit: function () {
             if (PluginViewController.prototype.onInit) {
                 PluginViewController.prototype.onInit.apply(this, arguments);

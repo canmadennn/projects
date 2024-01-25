@@ -33,7 +33,10 @@ class GenericSqlRepository {
                 resolve({ success: true, message: "Tablo başarıyla oluşturuldu." });
             })
                 .catch((error) => {
-                reject({ success: false, message: `Tablo oluşturma hatası: ${error.message || "Bilinmeyen bir hata"}` });
+                reject({
+                    success: false,
+                    message: `Tablo oluşturma hatası: ${error.message || "Bilinmeyen bir hata"}`
+                });
             });
         });
     }
@@ -48,17 +51,40 @@ class GenericSqlRepository {
             });
         });
     }
-    dynamicSelectTable(where, param, tablename) {
+    dynamicSelectTable(conditions, selectColumns, table, methot, sharedData) {
+        let sqlQuery = "";
+        if (methot === "SELECT") {
+            sqlQuery = `SELECT ${selectColumns.join(',')} FROM ${table} WHERE `;
+            const conditionClauses = Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`);
+            sqlQuery += conditionClauses.join(' AND ');
+        }
+        else if (methot === "UPDATE") {
+            sqlQuery = `UPDATE ${table} SET `;
+            const updateClauses = Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`);
+            sqlQuery += updateClauses.join(', ');
+            const conditionClauses = Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`);
+            sqlQuery += ` WHERE ${conditionClauses.join(' AND ')}`;
+        }
+        else if (methot === "INSERT") {
+            sqlQuery = `INSERT INTO ${table} (${Object.keys(sharedData).join(', ')}) VALUES `;
+            const insertValues = Object.values(sharedData).map(value => `'${value}'`);
+            sqlQuery += `(${insertValues.join(', ')})`;
+        }
+        else if (methot === "DROP") {
+            sqlQuery = `
+            DO $$ 
+            BEGIN 
+            EXECUTE 'DROP TABLE ' || quote_ident(${table}); 
+            END $$;`;
+        }
         return new Promise((resolve, reject) => {
             setTimeout(async () => {
                 try {
-                    // Asenkron bir işlem simülasyonu (örneğin, bir veritabanı sorgusu)
-                    const result = this.db.any(sql_1.genericSql.selectSelectedTable);
-                    // Sorgu sonucunu resolve et
+                    console.log(sqlQuery);
+                    const result = this.db.any(sqlQuery);
                     resolve(result);
                 }
                 catch (error) {
-                    // Hata durumunu reject et
                     reject("Hata oluştu: " + error);
                 }
             }, 1000);
