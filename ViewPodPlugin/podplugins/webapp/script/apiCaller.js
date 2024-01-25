@@ -40,7 +40,7 @@ function apiGETNoParam(service, afterMethod) {
     });
 }
 
-function apiPostFetch(service, params,afterMethod) {
+function apiPostFetch(service,params,afterMethod) {
     fetch(API_URL + service , {
         method: "POST",
         headers: {
@@ -54,7 +54,7 @@ function apiPostFetch(service, params,afterMethod) {
 
 }
 
-function apiPostAjax(service, params,afterMethod) {
+function apiPostAjax(service,params,afterMethod) {
     $.ajax({
         url: API_URL + service,
         type: 'POST',

@@ -128,6 +128,24 @@ export abstract class genericTs{
         return apiResp;
     }
 
+    static async dynamicSelectTable(where: any[], param: any[], tablename: string): Promise<ApiResponse> {
+        let apiResp = new ApiResponse();
+        try {
+            const result = await db.genericSql.dynamicSelectTable(where, param, tablename);
+            if (result.success) {
+                apiResp.message = result.message;
+                apiResp.status = 200;
+            } else {
+                apiResp.message = result.message;
+                apiResp.status = 500;
+            }
+        } catch (e: any) {
+            apiResp.message = e.message;
+            apiResp.status = 500;
+        }
+        return apiResp;
+    }
+
 
     private static processUnknownType(value: unknown): string {
         // typeof kontrolü ile tip kontrolü yapabiliriz.

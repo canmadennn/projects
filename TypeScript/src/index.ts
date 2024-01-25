@@ -116,6 +116,22 @@ app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
 
 });
 
+app.post('/selectTable', (req, res,next:NextFunction) => {
+    const requestData = req.body;
+    genericTs.dynamicSelectTable(requestData.where,requestData.param,requestData.tableName).then((v: ApiResponse)=>{
+        if(v.status !== 200 && v.status !== 201) {
+            if (typeof v.status === "number") {
+                res.status(v.status);
+            }
+            else res.status(500);
+            res.json(v);
+        }
+        else
+            res.json(v);
+    }).catch(err => next(err));
+
+});
+
 app.get('/getData',(req:Request, res:Response, next: NextFunction)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
