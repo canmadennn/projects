@@ -51,44 +51,69 @@ class GenericSqlRepository {
             });
         });
     }
-    dynamicSelectTable(conditions, selectColumns, table, methot, sharedData) {
-        let sqlQuery = "";
-        if (methot === "SELECT") {
-            sqlQuery = `SELECT ${selectColumns.join(',')} FROM ${table} WHERE `;
-            const conditionClauses = Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`);
-            sqlQuery += conditionClauses.join(' AND ');
+    /*   dynamicSqlQueries(conditions: any[], selectColumns: any[], table: string, methot: string, sharedData: any[]) {
+           let sqlQuery: string = "";
+           const conditionClauses = conditions !== undefined
+               ? Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`): [];
+   
+           switch (methot) {
+               case "SELECT":
+                   sqlQuery = `SELECT ${selectColumns.join(',')} FROM ${table}${conditionClauses.length > 0 ? ` WHERE ${conditionClauses.join(' AND ')}` : ''}`;
+                   break;
+               case "UPDATE":
+                   sqlQuery = `UPDATE ${table} SET ${Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`).join(', ')} WHERE ${conditionClauses.join(' AND ')}`;
+                   break;
+               case "INSERT":
+                   sqlQuery = `INSERT INTO ${table} (${Object.keys(sharedData).join(', ')}) VALUES (${Object.values(sharedData).map(value => `'${value}'`).join(', ')})`;
+                   break;
+               case "DELETE":
+                   sqlQuery = `DELETE FROM ${table} WHERE ${conditionClauses.join(' AND ')}`;
+                   break;
+               default:
+                   console.error('Unsupported method:', methot);
+                   break;
+           }
+           return new Promise((resolve, reject) => {
+               setTimeout(async () => {
+                   try {
+                       console.log(sqlQuery);
+                       const result = this.db.any(sqlQuery);
+                       resolve(result);
+                   } catch (error) {
+                       reject("Hata oluştu: " + error);
+                   }
+               }, 1000);
+           });
+       }*/
+    async dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData) {
+        const conditionClauses = conditions
+            ? Object.entries(conditions).map(([column, value]) => `${column.toLowerCase()} = '${value}'`) : [];
+        let sqlQuery = '';
+        switch (methot.toUpperCase()) {
+            case 'SELECT':
+                sqlQuery = `SELECT ${selectColumns.map(column => column.toLowerCase()).join(',')} FROM ${table.toLowerCase()}${conditionClauses.length ? ` WHERE ${conditionClauses.join(' AND ')}` : ''}`;
+                break;
+            case 'UPDATE':
+                sqlQuery = `UPDATE ${table.toLowerCase()} SET ${Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`).join(', ')} WHERE ${conditionClauses.join(' AND ')}`;
+                break;
+            case 'INSERT':
+                sqlQuery = `INSERT INTO ${table.toLowerCase()} (${Object.keys(sharedData).map(column => column.toLowerCase()).join(', ')}) VALUES (${Object.values(sharedData).map(value => `'${value}'`).join(', ')})`;
+                break;
+            case 'DELETE':
+                sqlQuery = `DELETE FROM ${table.toLowerCase()} WHERE ${conditionClauses.join(' AND ')}`;
+                break;
+            default:
+                console.error('Unsupported method:', methot);
+                break;
         }
-        else if (methot === "UPDATE") {
-            sqlQuery = `UPDATE ${table} SET `;
-            const updateClauses = Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`);
-            sqlQuery += updateClauses.join(', ');
-            const conditionClauses = Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`);
-            sqlQuery += ` WHERE ${conditionClauses.join(' AND ')}`;
+        try {
+            console.log(sqlQuery);
+            const result = await this.db.any(sqlQuery);
+            return result;
         }
-        else if (methot === "INSERT") {
-            sqlQuery = `INSERT INTO ${table} (${Object.keys(sharedData).join(', ')}) VALUES `;
-            const insertValues = Object.values(sharedData).map(value => `'${value}'`);
-            sqlQuery += `(${insertValues.join(', ')})`;
+        catch (error) {
+            throw new Error(`Hata oluştu: ${error}`);
         }
-        else if (methot === "DROP") {
-            sqlQuery = `
-            DO $$ 
-            BEGIN 
-            EXECUTE 'DROP TABLE ' || quote_ident(${table}); 
-            END $$;`;
-        }
-        return new Promise((resolve, reject) => {
-            setTimeout(async () => {
-                try {
-                    console.log(sqlQuery);
-                    const result = this.db.any(sqlQuery);
-                    resolve(result);
-                }
-                catch (error) {
-                    reject("Hata oluştu: " + error);
-                }
-            }, 1000);
-        });
     }
     selectAllTable() {
         return this.db.any(sql_1.genericSql.selectAllTable);

@@ -60,17 +60,13 @@ function apiPostAjax(service,params,afterMethod) {
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(params),
-        /* beforeSend: function (xhr) {
-             xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-             xhr.setRequestHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-             xhr.setRequestHeader('Access-Control-Allow-Headers', 'Content-Type');
-         },*/
         success: function (data) {
             console.log('API yanıtı:', data);
             afterMethod(data)
         },
         error: function (xhr, status, error) {
-            console.error('Hata:', error);
+            afterMethod(xhr.responseJSON);
+            console.error('Hata:', xhr.responseJSON.message);
         }
     });
 }

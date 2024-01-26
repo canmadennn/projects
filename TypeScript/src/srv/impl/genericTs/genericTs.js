@@ -67,10 +67,10 @@ class genericTs {
         }
         return apiResp;
     }
-    static async dynamicSelectTable(conditions, selectColumns, table, methot, sharedData) {
+    static async dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
-            const result = await db_1.db.genericSql.dynamicSelectTable(conditions, selectColumns, table, methot, sharedData);
+            const result = await db_1.db.genericSql.dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData);
             apiResp.message = "SCC";
             apiResp.data = result;
             apiResp.status = 200;
