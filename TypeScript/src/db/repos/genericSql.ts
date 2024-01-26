@@ -64,22 +64,22 @@ export class GenericSqlRepository {
 
 
  /*   dynamicSqlQueries(conditions: any[], selectColumns: any[], table: string, methot: string, sharedData: any[]) {
-        let sqlQuery: string = "";
-        const conditionClauses = conditions !== undefined
-            ? Object.entries(conditions).map(([column, value]) => `${column} = '${value}'`): [];
+        const conditionClauses = conditions
+            ? Object.entries(conditions).map(([column, value]) => `${column.toLowerCase()} = '${value}'`) : [];
+        let sqlQuery = '';
 
-        switch (methot) {
-            case "SELECT":
-                sqlQuery = `SELECT ${selectColumns.join(',')} FROM ${table}${conditionClauses.length > 0 ? ` WHERE ${conditionClauses.join(' AND ')}` : ''}`;
+        switch (methot.toUpperCase()) {
+            case 'SELECT':
+                sqlQuery = `SELECT ${selectColumns.map(column => column.toLowerCase()).join(',')} FROM ${table.toLowerCase()}${conditionClauses.length ? ` WHERE ${conditionClauses.join(' AND ')}` : ''}`;
                 break;
-            case "UPDATE":
-                sqlQuery = `UPDATE ${table} SET ${Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`).join(', ')} WHERE ${conditionClauses.join(' AND ')}`;
+            case 'UPDATE':
+                sqlQuery = `UPDATE ${table.toLowerCase()} SET ${Object.entries(sharedData).map(([column, value]) => `${column} = '${value}'`).join(', ')} WHERE ${conditionClauses.join(' AND ')}`;
                 break;
-            case "INSERT":
-                sqlQuery = `INSERT INTO ${table} (${Object.keys(sharedData).join(', ')}) VALUES (${Object.values(sharedData).map(value => `'${value}'`).join(', ')})`;
+            case 'INSERT':
+                sqlQuery = `INSERT INTO ${table.toLowerCase()} (${Object.keys(sharedData).map(column => column.toLowerCase()).join(', ')}) VALUES (${Object.values(sharedData).map(value => `'${value}'`).join(', ')})`;
                 break;
-            case "DELETE":
-                sqlQuery = `DELETE FROM ${table} WHERE ${conditionClauses.join(' AND ')}`;
+            case 'DELETE':
+                sqlQuery = `DELETE FROM ${table.toLowerCase()} WHERE ${conditionClauses.join(' AND ')}`;
                 break;
             default:
                 console.error('Unsupported method:', methot);

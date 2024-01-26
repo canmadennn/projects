@@ -58,7 +58,7 @@ export abstract class genericTs{
 
             if (result!=null) {
                 console.log(result);
-                apiResp.message = "SCC";
+                apiResp.message = "İşlem Başarlı";
                 apiResp.data = result;
                 apiResp.status = 200;
 
@@ -80,7 +80,7 @@ export abstract class genericTs{
         let apiResp = new ApiResponse();
         try {
             const result:any = await db.genericSql.dynamicSqlQueries(conditions, selectColumns, table,methot,sharedData);
-            apiResp.message = "SCC";
+            apiResp.message = "İşlem Başarlı";
             apiResp.data = result;
             apiResp.status = 200;
         } catch (e: any) {
