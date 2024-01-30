@@ -50,7 +50,7 @@ class genericTs {
             const result = await db_1.db.genericSql.selectAllTable();
             if (result != null) {
                 console.log(result);
-                apiResp.message = "SCC";
+                apiResp.message = "İşlem Başarlı";
                 apiResp.data = result;
                 apiResp.status = 200;
             }
@@ -67,11 +67,11 @@ class genericTs {
         }
         return apiResp;
     }
-    static async dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData) {
+    static async dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData, queris) {
         let apiResp = new ApiResponse_1.ApiResponse();
         try {
-            const result = await db_1.db.genericSql.dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData);
-            apiResp.message = "SCC";
+            const result = await db_1.db.genericSql.dynamicSqlQueries(conditions, selectColumns, table, methot, sharedData, queris);
+            apiResp.message = "İşlem Başarılı";
             apiResp.data = result;
             apiResp.status = 200;
         }

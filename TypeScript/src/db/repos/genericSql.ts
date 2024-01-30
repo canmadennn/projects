@@ -98,7 +98,7 @@ export class GenericSqlRepository {
         });
     }*/
 
-    async dynamicSqlQueries(conditions: any[], selectColumns: any[], table: string, methot: string, sharedData: any[]) {
+    async dynamicSqlQueries(conditions: any[], selectColumns: any[], table: string, methot: string, sharedData: any[],queris:string) {
         const conditionClauses = conditions
             ? Object.entries(conditions).map(([column, value]) => `${column.toLowerCase()} = '${value}'`) : [];
         let sqlQuery = '';
@@ -115,6 +115,9 @@ export class GenericSqlRepository {
                 break;
             case 'DELETE':
                 sqlQuery = `DELETE FROM ${table.toLowerCase()} WHERE ${conditionClauses.join(' AND ')}`;
+                break;
+            case 'QUERY':
+                sqlQuery = queris;
                 break;
             default:
                 console.error('Unsupported method:', methot);

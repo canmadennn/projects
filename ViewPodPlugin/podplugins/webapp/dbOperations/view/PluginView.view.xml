@@ -15,148 +15,224 @@
                     <l:BlockLayoutRow>
                         <l:BlockLayoutCell width="3">
                             <HBox width="100%" alignItems="Stretch">
-                                <Panel width="100%" height="100%" expandable="false" expanded="true" accessibleRole="Region" backgroundDesign="Transparent">
-                                <content>
-                                    <VBox justifyContent="Center" alignItems="Center">
-                                        <HBox justifyContent="Center" alignItems="Center">
-                                            <Text text="Tablo Adı:"/>
-                                            <Label text="" width="1rem"/>
-                                            <Input id="tableNameInput" placeholder="Tablo Adı"/>
-                                        </HBox>
-                                        <Table id="createTable" inset="false" items="{/tableData}">
-                                            <columns>
-                                                <Column>
-                                                    <Text text="Kolon İsmi"/>
-                                                </Column>
-                                                <Column>
-                                                    <Text text="Kolon Türü"/>
-                                                </Column>
-                                                <Column width="50px">
-                                                    <Text text=""/>
-                                                </Column>
-                                            </columns>
-                                            <items>
-                                                <ColumnListItem>
-                                                    <cells>
-                                                        <Input id="clmInput" value="{colName}"/>
-                                                        <ComboBox width="300px" showClearIcon="true" id="packageType" items="{getClmTypeModel>/item}" selectionChange="onComboBoxSelectionChange">
-                                                            <core:Item key="{getClmTypeModel>Type}" text="{getClmTypeModel>Type}" />
-                                                        </ComboBox>
-                                                        <Button icon="sap-icon://delete" press="onDeleteRow"/>
-                                                    </cells>
-                                                </ColumnListItem>
-                                            </items>
-                                        </Table>
-                                        <HBox>
-                                            <Button text="Yeni Satır" press="onAddRow" textAlign="Center" width="10rem"/>
-                                            <Label text="" width="1rem"/>
-                                            <Button text="Tablo Oluştur" press="onTableCreate" textAlign="Center" width="10rem"/>
-                                        </HBox>
-                                    </VBox>
-                                </content>
-                            </Panel>
-
+                                <Panel width="100%" height="100%" expandable="false" expanded="true"
+                                       accessibleRole="Region" backgroundDesign="Transparent">
+                                    <content>
+                                        <VBox justifyContent="Center" alignItems="Center">
+                                            <HBox justifyContent="Center" alignItems="Center">
+                                                <Text text="Tablo Adı:"/>
+                                                <Label text="" width="1rem"/>
+                                                <Input id="tableNameInput" placeholder="Tablo Adı"/>
+                                            </HBox>
+                                            <Table id="createTable" inset="false" items="{/tableData}">
+                                                <columns>
+                                                    <Column>
+                                                        <Text text="Kolon İsmi"/>
+                                                    </Column>
+                                                    <Column>
+                                                        <Text text="Kolon Türü"/>
+                                                    </Column>
+                                                    <Column width="50px">
+                                                        <Text text=""/>
+                                                    </Column>
+                                                </columns>
+                                                <items>
+                                                    <ColumnListItem>
+                                                        <cells>
+                                                            <Input id="clmInput" value="{colName}"/>
+                                                            <ComboBox width="300px" showClearIcon="true"
+                                                                      id="packageType" items="{getClmTypeModel>/item}"
+                                                                      selectionChange="onComboBoxSelectionChange">
+                                                                <core:Item key="{getClmTypeModel>Type}"
+                                                                           text="{getClmTypeModel>Type}"/>
+                                                            </ComboBox>
+                                                            <Button icon="sap-icon://delete" press="onDeleteRow"/>
+                                                        </cells>
+                                                    </ColumnListItem>
+                                                </items>
+                                            </Table>
+                                            <HBox>
+                                                <Button text="Yeni Satır" press="onAddRow" textAlign="Center"
+                                                        width="10rem"/>
+                                                <Label text="" width="1rem"/>
+                                                <Button text="Tablo Oluştur" press="onTableCreate" textAlign="Center"
+                                                        width="10rem"/>
+                                            </HBox>
+                                        </VBox>
+                                    </content>
+                                </Panel>
                             </HBox>
-
                         </l:BlockLayoutCell>
                         <l:BlockLayoutCell>
-
                             <!-- Tablo Silme İçin İkinci Panel -->
-                            <Panel width="100%" height="100%" expandable="false" expanded="true" accessibleRole="Region" backgroundDesign="Transparent" id="deletePanel">
+                            <Panel width="100%" height="100%" expandable="false" expanded="true" accessibleRole="Region"
+                                   backgroundDesign="Transparent" id="deletePanel">
                                 <content>
                                     <HBox>
-                                    <Text text="Mevcut Tablolar:"/>
-                                    <Label text="" width="1rem"/>
-                                    <ComboBox id="existingTablesCombo" items="{existingTables>/}" selectionChange="onExistingTablesComboChange">
-                                        <core:Item key="{existingTables>table_name}" text="{existingTables>table_name}" />
-                                    </ComboBox>
-                                    <Label text="" width="1rem"/>
-                                    <Button text="Tablo Sil" press="onDeleteTableButton" textAlign="Center" width="10rem" id="deleteTableButton"/>
+                                        <Text text="Mevcut Tablolar:"/>
+                                        <Label text="" width="1rem"/>
+                                        <ComboBox id="existingTablesCombo" items="{existingTables>/}"
+                                                  selectionChange="onExistingTablesComboChange">
+                                            <core:Item key="{existingTables>table_name}"
+                                                       text="{existingTables>table_name}"/>
+                                        </ComboBox>
+                                        <Label text="" width="1rem"/>
+                                        <Button text="Tablo Sil" press="onDeleteTableButton" textAlign="Center"
+                                                width="10rem" id="deleteTableButton"/>
                                     </HBox>
                                 </content>
                             </Panel>
                         </l:BlockLayoutCell>
                     </l:BlockLayoutRow>
                     <l:BlockLayoutRow>
-                    <l:BlockLayoutCell>
-                        <Table id="createTable2" inset="false" items="{/tableData}">
-                            <columns>
-                                <Column>
-                                    <Text text="Kolon İsmi"/>
-                                </Column>
-                                <Column>
-                                    <Text text="Kolon Türü"/>
-                                </Column>
-                                <Column width="50px">
-                                    <Text text=""/>
-                                </Column>
-                            </columns>
-                            <items>
-                                <ColumnListItem>
-                                    <cells>
-                                        <Input id="clmInput2" value="{colName}"/>
-                                        <ComboBox width="300px" showClearIcon="true" id="packageType2" items="{getClmTypeModel>/item}" selectionChange="onComboBoxSelectionChange">
-                                            <core:Item key="{getClmTypeModel>Type}" text="{getClmTypeModel>Type}" />
+                        <l:BlockLayoutCell>
+                            <VBox>
+                                <HBox>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Tablo Adı"/>
+                                        <Label text="" width="1rem"/>
+                                        <ComboBox id="selectTableNameCombo" items="{existingTables>/}"
+                                                  selectionChange="onExistingTablesComboChange">
+                                            <core:Item key="{existingTables>table_name}"
+                                                       text="{existingTables>table_name}"/>
                                         </ComboBox>
-                                        <Button icon="sap-icon://delete" press="onDeleteRow"/>
-                                    </cells>
-                                </ColumnListItem>
-                            </items>
-                        </Table>
-                    </l:BlockLayoutCell>
+                                    </HBox>
+                                    <Label text="" width="2rem"/>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Kolonlar"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="columnsInput" width="22rem"
+                                               placeholder="Kolon İsmi,Kolon İsmi (Birden fazla ise ',' ile ayırın)"/>
+                                    </HBox>
+                                    <Label text="" width="2rem"/>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Şartlar"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="conditionsInput" width="26rem"
+                                               placeholder="Kolon İsmi=Şart,Kolon İsmi=Şart (Birden fazla ise ',' ile ayırın)"/>
+                                    </HBox>
+                                    <Label text="" width="2rem"/>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Query"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="querisInput" width="26rem"/>
+                                    </HBox>
+                                    <Label text="" width="2rem"/>
+                                    <HBox>
+                                        <Button text="Tablo Getir" press="selectTableData" textAlign="Center"
+                                                width="10rem" id="getSelectTableButton"/>
+                                    </HBox>
+                                </HBox>
+                                <Table id="selectDbTable" inset="false" visible="false">
+                                    <columns>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </VBox>
+                        </l:BlockLayoutCell>
                     </l:BlockLayoutRow>
                     <l:BlockLayoutRow>
                         <l:BlockLayoutCell>
-                            <Table id="createTable3" inset="false" items="{/tableData}">
-                                <columns>
-                                    <Column>
-                                        <Text text="Kolon İsmi"/>
-                                    </Column>
-                                    <Column>
-                                        <Text text="Kolon Türü"/>
-                                    </Column>
-                                    <Column width="50px">
-                                        <Text text=""/>
-                                    </Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Input id="clmInput3" value="{colName}"/>
-                                            <ComboBox width="300px" showClearIcon="true" id="packageType3" items="{getClmTypeModel>/item}" selectionChange="onComboBoxSelectionChange">
-                                                <core:Item key="{getClmTypeModel>Type}" text="{getClmTypeModel>Type}" />
-                                            </ComboBox>
-                                            <Button icon="sap-icon://delete" press="onDeleteRow"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
-                        </l:BlockLayoutCell>
-                        <l:BlockLayoutCell>
-                            <Table id="createTable4" inset="false" items="{/tableData}">
-                                <columns>
-                                    <Column>
-                                        <Text text="Kolon İsmi"/>
-                                    </Column>
-                                    <Column>
-                                        <Text text="Kolon Türü"/>
-                                    </Column>
-                                    <Column width="50px">
-                                        <Text text=""/>
-                                    </Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem>
-                                        <cells>
-                                            <Input id="clmInput4" value="{colName}"/>
-                                            <ComboBox width="300px" showClearIcon="true" id="packageType4" items="{getClmTypeModel>/item}" selectionChange="onComboBoxSelectionChange">
-                                                <core:Item key="{getClmTypeModel>Type}" text="{getClmTypeModel>Type}" />
-                                            </ComboBox>
-                                            <Button icon="sap-icon://delete" press="onDeleteRow"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
+                            <HBox>
+                                <HBox justifyContent="Center" alignItems="Center">
+                                    <Text text="Tablo Adı"/>
+                                    <Label text="" width="1rem"/>
+                                    <ComboBox id="insertTableNameCombo" items="{existingTables>/}"
+                                              selectionChange="onExistingTablesComboChange">
+                                        <core:Item key="{existingTables>table_name}"
+                                                   text="{existingTables>table_name}"/>
+                                    </ComboBox>
+                                </HBox>
+                                <Label text="" width="2rem"/>
+                                <HBox justifyContent="Center" alignItems="Center">
+                                    <Text text="İnsert Parametre"/>
+                                    <Label text="" width="27px"/>
+                                    <Input id="insertSharedDataInput" width="26rem"
+                                           placeholder="Kolon İsmi=Değer,Kolon İsmi=Değer (Birden fazla ise ',' ile ayırın)"/>
+                                </HBox>
+                                <Label text="" width="2rem"/>
+                                <HBox>
+                                    <Button text="İnsert Kaydet" press="insertTableButton" textAlign="Center"
+                                            width="10rem"/>
+                                </HBox>
+                            </HBox>
+                            <HBox>
+                                <HBox justifyContent="Center" alignItems="Center">
+                                    <Text text="Tablo Adı"/>
+                                    <Label text="" width="1rem"/>
+                                    <ComboBox id="updateTableNameCombo" items="{existingTables>/}"
+                                              selectionChange="onExistingTablesComboChange">
+                                        <core:Item key="{existingTables>table_name}"
+                                                   text="{existingTables>table_name}"/>
+                                    </ComboBox>
+                                </HBox>
+                                <Label text="" width="2rem"/>
+                                <HBox>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Update Parametre"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="updateSharedDataInput" width="26rem"
+                                               placeholder="Kolon İsmi=Değer,Kolon İsmi=Değer (Birden fazla ise ',' ile ayırın)"/>
+                                    </HBox>
+                                    <Label text="" width="2rem"/>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Şartlar"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="updateConditionsInput" width="26rem"
+                                               placeholder="Kolon İsmi=Şart,Kolon İsmi=Şart (Birden fazla ise ',' ile ayırın)"/>
+                                    </HBox>
+                                </HBox>
+                                <Label text="" width="2rem"/>
+                                <HBox>
+                                    <Button text="Update Kaydet" press="updateTableButton" textAlign="Center"
+                                            width="10rem"/>
+                                </HBox>
+                            </HBox>
+                            <HBox>
+                            <HBox justifyContent="Center" alignItems="Center">
+                                <Text text="Tablo Adı"/>
+                                <Label text="" width="1rem"/>
+                                <ComboBox id="deleteTableNameCombo" items="{existingTables>/}"
+                                          selectionChange="onExistingTablesComboChange">
+                                    <core:Item key="{existingTables>table_name}"
+                                               text="{existingTables>table_name}"/>
+                                </ComboBox>
+                            </HBox>
+
+                                <Label text="" width="2rem"/>
+                                <HBox justifyContent="Center" alignItems="Center">
+                                    <Text text="Şartlar"/>
+                                    <Label text="" width="1rem"/>
+                                    <Input id="deleteConditionsInput" width="26rem"
+                                           placeholder="Kolon İsmi=Şart,Kolon İsmi=Şart (Birden fazla ise ',' ile ayırın)"/>
+                                </HBox>
+
+                            <Label text="" width="2rem"/>
+                            <HBox>
+                                <Button text="Delete Kaydet" press="deleteTableButton" textAlign="Center"
+                                        width="10rem"/>
+                            </HBox>
+                            </HBox>
+
+                            <HBox>
+                                <HBox>
+                                    <HBox justifyContent="Center" alignItems="Center">
+                                        <Text text="Query"/>
+                                        <Label text="" width="1rem"/>
+                                        <Input id="queryInput" width="26rem"/>
+                                    </HBox>
+                                </HBox>
+                                <Label text="" width="2rem"/>
+                                <HBox>
+                                    <Button text="Query Çalıştır" press="queryRunButton" textAlign="Center"
+                                            width="10rem"/>
+                                </HBox>
+                            </HBox>
                         </l:BlockLayoutCell>
                     </l:BlockLayoutRow>
                 </l:BlockLayout>

@@ -42,18 +42,6 @@ app.get('/getBomBySfc', (req: Request, res: Response, next :NextFunction) => {
     }).catch(err => next(err));
 });
 
-app.get('/createTable',(req:Request, res:Response)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-   let x= sfcInfo.getUser();
-    res.json({
-        message:x
-    });
-});
-
 app.post('/ornekEndpoint', (req, res) => {
     const requestData = req.body;
     const response = {
@@ -118,7 +106,7 @@ app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
 
 app.post('/dynamicSqlQueries', (req, res,next:NextFunction) => {
     const requestData = req.body;
-    genericTs.dynamicSqlQueries(requestData.conditions,requestData.selectColumns,requestData.table,requestData.methot,requestData.sharedData).then((v: ApiResponse)=>{
+    genericTs.dynamicSqlQueries(requestData.conditions,requestData.selectColumns,requestData.table,requestData.methot,requestData.sharedData,requestData.query).then((v: ApiResponse)=>{
         if(v.status !== 200 && v.status !== 201) {
             if (typeof v.status === "number") {
                 res.status(v.status);
@@ -132,15 +120,7 @@ app.post('/dynamicSqlQueries', (req, res,next:NextFunction) => {
 
 });
 
-app.get('/getData',(req:Request, res:Response, next: NextFunction)=>{
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-        "Access-Control-Allow-Methods",
-        "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-    );
-    res.setHeader('Access-Control-Allow-Headers','Content-Type');
-    sfcInfo.getUser();
-});
+
 
 app.listen(port, () => {
     console.log("s");

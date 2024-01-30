@@ -62,10 +62,10 @@ function apiPostAjax(service,params,afterMethod) {
         data: JSON.stringify(params),
         success: function (data) {
             console.log('API yanıtı:', data);
-            afterMethod(data)
+            afterMethod ? afterMethod(data):sap.m.MessageBox.show(data.message,"S");
         },
         error: function (xhr, status, error) {
-            afterMethod(xhr.responseJSON);
+            afterMethod ? afterMethod(xhr.responseJSON):sap.m.MessageBox.show(xhr.responseJSON.message,"E");
             console.error('Hata:', xhr.responseJSON.message);
         }
     });
