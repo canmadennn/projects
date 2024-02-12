@@ -11,7 +11,7 @@ applications:
       CORS: "[{\"uriPattern\": \"^/podplugins/(.*)$\",\"allowedOrigin\": [
               {\"host\": \"slv-dmc-dev-002-p1ebyin6.test.execution.us20.dmc.cloud.sap\",\"protocol\": \"https\"},
               {\"host\": \"slv-dmc-dev-002-p1ebyin6.test.execution.us20.dmc.cloud.sap\",\"protocol\": \"https\"}],
-              \"allowedMethods\": [\"GET\",\"OPTIONS\"],
+              \"allowedMethods\": [\"GET\",\"POST\",\"OPTIONS\"],
               \"allowedHeaders\":[\"Origin\", \"Accept\",\"X-Requested-With\",\"Content-Type\",
                     \"Access-Control-Request-Method\",\"Access-Control-Request-Headers\",\"Authorization\",
                     \"X-Sap-Cid\",\"X-Csrf-Token\",\"x-dme-plant\",\"x-dme-industry-type\",\"x-features\"],
