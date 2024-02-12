@@ -9,6 +9,13 @@
       "source": "^/podplugins/(.*)$",
       "target": "$1",
       "localDir": "webapp"
+    },
+    {
+      "source": "^/dmeapi/(.*)$",
+      "target": "$1",
+      "destination": "test",
+      "csrfProtection": false,
+      "authenticationType": "xsuaa"
     }
   ]
 }
