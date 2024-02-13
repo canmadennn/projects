@@ -2,10 +2,11 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/dm/dme/podfoundation/controller/PluginViewController",
     "sap/dm/dme/podfoundation/model/PodType",
-    "../script/apiCaller"
-], function(JSONModel, PluginViewController, PodType,costum) {
+    "../../script/apiCaller",
+    "sap/m/MessageBox"
+], function(JSONModel, PluginViewController, PodType,costum,MessageBox) {
     "use strict";
-    var cess="s";
+
 
     var oPluginViewController = PluginViewController.extend("com.maden.viewplugins.userLogin.controller.PluginView", {
         metadata : {
@@ -22,49 +23,15 @@ sap.ui.define([
 
         },
 
-        /**
-         * @see PluginViewController.onBeforeRenderingPlugin()
-         */
-        onBeforeRenderingPlugin: function() {
-            this.subscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
-            this.subscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
-            this.subscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
-        },
+        onPressAdd: function (data) {
+            MessageBox.show("test","E");
+            //test("allTableSelect", this.allTableModel.bind(this));
+            },
 
-        onExit: function() {
-            if (PluginViewController.prototype.onExit) {
-                PluginViewController.prototype.onExit.apply(this, arguments);
-            }
-            this.unsubscribe("PodSelectionChangeEvent", this.onPodSelectionChangeEvent, this);
-            this.unsubscribe("OperationListSelectEvent", this.onOperationChangeEvent, this);
-            this.unsubscribe("WorklistSelectEvent", this.onWorkListSelectEvent, this);
-        },
-
-        onPressInterest:function () {
-         var userID=this.getView().byId("userNameInput").getValue();
-          console.log( userID+"çıkart")
-        },
-
-        onPressAdd:function (){
-
-            const plant = sap.dm.dme.util.PlantSettings.getCurrentPlant();
-          //  const sfc = this.getPodSelectionModel().getSelection().shopOrder.shopOrder;
-            var userID=this.getView().byId("userNameInput").getValue();
-            console.log(plant+"       "+userID+"     "+"ekle")
-
-            const params = {
-
-            };
-            apiGET("getData",params,this.setProp.bind(this));
-        },
-
-        setProp:function (data) {
-            console.log(data)
-        },
-
-
-
-
+        onPressInterest: function (data) {
+            MessageBox.show("test2","S");
+           // test("allTableSelect", this.allTableModel.bind(this));
+            },
 
 
     })

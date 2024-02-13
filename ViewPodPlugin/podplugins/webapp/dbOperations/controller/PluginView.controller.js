@@ -89,6 +89,7 @@ sap.ui.define([
         },
 
         allTableData: function (data) {
+
             if (data !== undefined) {
                 sap.m.MessageBox.show(data.message, data.status === 200 ? "S" : "E");
                 data.status === 200 && this.getView().byId("existingTablesCombo").setSelectedKey("");

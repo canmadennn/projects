@@ -11,7 +11,7 @@
       "localDir": "webapp"
     },
     {
-      "source": "^/dmeapi/(.*)$",
+      "source": "^/test/(.*)$",
       "target": "$1",
       "destination": "test",
       "csrfProtection": false,

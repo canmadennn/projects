@@ -2,6 +2,9 @@ jQuery.sap.require("sap.m.MessageBox");
 
 const API_URL = "https://demobackendservices.cfapps.us10-001.hana.ondemand.com/";
 
+//const x = "/"+this.getOwnerComponent().getManifestEntry("/sap.app/id").replaceAll(".", "/")+"/"+"test"+"/";
+
+
 function apiGET(service, param, afterMethod) {
     const searchParams = Object.entries(param).map(([key, val]) => `${key}=${val}`).join('&');
     $.ajax({
@@ -38,6 +41,42 @@ function apiGETNoParam(service, afterMethod) {
             }.bind(this));
         },
     });
+}
+
+function test(service, afterMethod) {
+    $.ajax({
+        url: API_URL + service,
+        type: "GET",
+        async: false,
+        success: function (data) {
+            console.log("Ajax Response: " + data);
+            afterMethod(data);
+        },
+        error: function (error) {
+            sap.m.MessageBox.error(error.responseText, {
+                title: "Error",
+                actions: sap.m.MessageBox.Action.CLOSE
+            }.bind(this));
+        },
+    });
+}
+
+
+
+function x(url,service, afterMethod) {
+var token;
+$.ajax({
+    url: "/"+url+"/test/v1/xsrf-token",
+    method: "GET",
+    async: false,
+    headers: {
+        "X-CSRF-Token": "Fetch"
+    },
+    success: function(result, xhr, data) {
+        token = data.getResponseHeader("X-CSRF-Token");
+    }
+});
+return token;
 }
 
 function apiPostFetch(service,params,afterMethod) {
