@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import {db} from './db';
 import {IgenericTables, Itest} from "./db/models";
 import {genericTs} from "./srv/impl/genericTs/genericTs";
+import {serviceCall} from "./srv/impl/serviceCall/serviceCall";
 
 
 
@@ -102,6 +103,19 @@ app.get('/allTableSelect',(req:Request, res:Response, next: NextFunction)=>{
         });
 
 
+});
+
+
+app.get('/serviceCall',(req:Request, res:Response, next: NextFunction)=>{
+    serviceCall.getOrderList().then((result) => {
+        if (result) {
+            console.log(result);
+            res.json(result);
+        }
+    }).catch((error) => {
+            console.error('Hata oluştu:', error);
+            res.json(error);
+        });
 });
 
 app.post('/dynamicSqlQueries', (req, res,next:NextFunction) => {

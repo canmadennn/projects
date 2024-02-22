@@ -10,3 +10,5 @@ applications:
   - connectivity-cf
   - postgresql-cf
   - hanasql
+  - ApiPortalV3
+  - uaa_MdnPodPlugin

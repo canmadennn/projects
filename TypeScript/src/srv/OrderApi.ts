@@ -6,10 +6,11 @@ import {SfcDetailResponse} from "../apisdk/sapdme_sfc";
 import {ApiResponse} from "./dto/ApiResponse";
 
 export class OrderApi{
-    static async getOrders(plant: string , order: string ): Promise<ApiResponse> {
+    static async getOrders(plant: string , order: string): Promise<ApiResponse> {
         return await AxiosCaller.callDMC(ApiType.ORDER, "/orders", RequestType.GET, {
             plant: plant,
             order: order
+
         });
     };
 
