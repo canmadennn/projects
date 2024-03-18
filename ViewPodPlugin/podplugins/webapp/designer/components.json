@@ -95,7 +95,7 @@
       ]
     },
     {
-      "provider": "com/maden/viewplugins/sfcCardExtensionProvider/ExtensionProvider",
+      "provider": "com/maden/viewplugins/extension/sfcCardExtensionProvider/ExtensionProvider",
       "controller": "sap.dm.dme.plugins.headerInformationPlugin",
       "inclusions": [
         {
