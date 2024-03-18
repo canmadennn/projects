@@ -25,13 +25,53 @@ sap.ui.define([
 
         onPressAdd: function (data) {
             MessageBox.show("test","E");
-            //test("allTableSelect", this.allTableModel.bind(this));
-            },
+            var oModel = new sap.ui.model.json.JSONModel();
+            jQuery.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: "/serviceCall",
+                dataType: "json",
+                success: function(data) {
+                    // Veriyi modele yükleme
+                    oModel.setData(data);
+                },
+                error: function(error) {
+                    console.error("API çağrısında hata oluştu: " + error);
+                }
+            });
+
+
+
+
+
+        },
 
         onPressInterest: function (data) {
-            MessageBox.show("test2","S");
-           // test("allTableSelect", this.allTableModel.bind(this));
-            },
+            // Hedef destinasyon adı
+            var destinationName = "northwind";
+
+// SAP Cloud Platform Destination Service URL
+            var destinationServiceUrl = "https://1a8fcc0etrial.authentication.us10.hana.ondemand.com";
+
+// Hedef destinasyon yapılandırmasını almak için istek yapma
+            $.ajax({
+                type: "GET",
+                url: destinationServiceUrl + "/destination-configuration/v1/destinations/" + destinationName,
+                success: function(data) {
+                    // Hedef destinasyon yapılandırmasını al
+                    var destination = data;
+                    // Hedef destinasyonun URL'sini al
+                    var destinationUrl = destination.destinationConfiguration.URL;
+                    console.log("Hedef destinasyonun URL'si: " + destinationUrl);
+                    // Burada hedef destinasyonun URL'sini kullanarak isteği gerçekleştirebilirsiniz
+                },
+                error: function(error) {
+                    console.error("Hedef destinasyon alınırken bir hata oluştu:", error);
+                }
+            });
+
+
+        },
 
 
     })

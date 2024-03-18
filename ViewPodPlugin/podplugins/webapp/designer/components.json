@@ -54,7 +54,59 @@
         "productionProcessEnabled": true,
         "productionProcessTitle": "userLoginTitle",
         "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
+      },
+      {
+        "id": "scanAssemblyApp",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.scanassembly.scanassemblyapp",
+        "propertyEditor": "com.maden.viewplugins.scanassembly.scanassemblyapp.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.scanassembly.scanassemblyapp.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "Scan Pod Plugin",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION","ORDER","OTHER","MONITOR"]
+      },
+      {
+        "id": "statusApp",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.scanassembly.statusapp",
+        "propertyEditor": "com.maden.viewplugins.scanassembly.statusapp.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.scanassembly.statusapp.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "Status Pod Plugin",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION","ORDER","OTHER","MONITOR"]
       }
 
-    ]
+    ],
+  "extensions": [
+    {
+      "provider": "com/maden/viewplugins/worklistExtensionProvider/ExtensionProvider",
+      "controller": "sap.dm.dme.plugins.worklistPlugin",
+      "inclusions": [
+        {
+          "pods": [
+            "MCM", "EXAMPLE_CUSTOM_PLUGINS_OP_POD", "EXAMPLE_CUSTOM_PLUGINS_ORDER_POD", "EXAMPLE_CUSTOM_PLUGINS_LM_POD"
+          ],
+          "plants": [
+            "PP01"
+          ]
+        }
+      ]
+    },
+    {
+      "provider": "com/maden/viewplugins/sfcCardExtensionProvider/ExtensionProvider",
+      "controller": "sap.dm.dme.plugins.headerInformationPlugin",
+      "inclusions": [
+        {
+          "pods": [
+            "MCM_SFC"
+          ],
+          "plants": [
+            "PP01"
+          ]
+        }
+      ]
+    }
+  ]
 }
