@@ -1,0 +1,32 @@
+{
+    "sap.app": {
+        "id": "com.maden.viewplugins.auditlog",
+        "type": "component",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "embeddedBy": "../"
+    },
+
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "com.maden.viewplugins.userLogin.view.PluginView",
+            "type": "XML",
+            "id": "auditlog"
+        },
+        "resources": {
+            "css": [{
+                "uri": "css/style.css"
+            }]
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "com.maden.viewplugins.auditlog.i18n.i18n"
+                }
+            }
+        }
+    }
+}
+
