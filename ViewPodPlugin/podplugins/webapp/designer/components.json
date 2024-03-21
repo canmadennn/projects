@@ -76,8 +76,18 @@
         "productionProcessEnabled": true,
         "productionProcessTitle": "Status Pod Plugin",
         "supportedPodTypes": ["WORK_CENTER","OPERATION","ORDER","OTHER","MONITOR"]
+      },
+      {
+        "id": "auditlog",
+        "type": "VIEW_PLUGIN",
+        "allowMultipleInstances": true,
+        "name": "com.maden.viewplugins.auditlog",
+        "propertyEditor": "com.maden.viewplugins.auditlog.builder.PropertyEditor",
+        "i18n": "com.maden.viewplugins.auditlog.i18n.i18n",
+        "productionProcessEnabled": true,
+        "productionProcessTitle": "auditlogTitle",
+        "supportedPodTypes": ["WORK_CENTER","OPERATION", "ORDER", "OTHER", "MONITOR"]
       }
-
     ],
   "extensions": [
     {
