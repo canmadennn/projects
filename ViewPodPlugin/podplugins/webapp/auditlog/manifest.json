@@ -10,7 +10,7 @@
 
     "sap.ui5": {
         "rootView": {
-            "viewName": "com.maden.viewplugins.userLogin.view.PluginView",
+            "viewName": "com.maden.viewplugins.auditlog.view.PluginView",
             "type": "XML",
             "id": "auditlog"
         },
